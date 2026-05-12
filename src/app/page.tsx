@@ -186,7 +186,9 @@ a contacto@lodgepatagonia.cl
           <section className="flex-1 w-full max-w-lg min-w-0 lg:overflow-y-auto lg:pr-2 custom-scrollbar pl-5 lg:pl-0">
             <div className="text-center lg:text-left mb-3 lg:mb-8">
               <h2 className="section-title-ref">Selecciona cabaña</h2>
-              <p className="text-[12px] text-slate-400 font-medium mt-1 lg:hidden">Desliza</p>
+              <p className="text-[10px] text-orange-500 font-black uppercase tracking-widest mt-1">
+                * Primero debes seleccionar tu cabaña
+              </p>
             </div>
             <CabinSelector 
               selectedCabinId={selectedCabinId} 
