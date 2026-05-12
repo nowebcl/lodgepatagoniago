@@ -114,6 +114,46 @@ export default function Home() {
         });
       });
 
+      // Generar Comprobante para descargar automáticamente
+      const receiptContent = `
+=========================================
+      RESERVA - LODGE PATAGONIA GO
+=========================================
+ID RESERVA: ${Math.random().toString(36).substring(2, 9).toUpperCase()}
+FECHA DE SOLICITUD: ${new Date().toLocaleDateString('es-CL')}
+
+DETALLES DE LA ESTANCIA:
+-----------------------------------------
+CABAÑA: ${selectedCabin?.name}
+FECHAS: ${sortedDates.map(d => d.toLocaleDateString('es-CL')).join(', ')}
+TOTAL NOCHES: ${sortedDates.length}
+VALOR TOTAL: CLP $${totalPrice.toLocaleString('es-CL')}
+
+DATOS DEL HUÉSPED:
+-----------------------------------------
+NOMBRE: ${formData.name}
+TELÉFONO: ${formData.phone}
+EMAIL: ${formData.email}
+
+PRÓXIMOS PASOS:
+-----------------------------------------
+Para confirmar su estadía, realice la transferencia 
+en las próximas 2 horas y envíe el comprobante 
+a contacto@lodgepatagonia.cl
+
+¡Gracias por elegir Lodge Patagonia!
+=========================================
+`;
+      const blob = new Blob([receiptContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Reserva_LodgePatagonia_${formData.name.replace(/\s+/g, '_')}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
       setSelectedDates([]);
       setFormData({ name: '', phone: '', email: '' });
     } catch (error) {
