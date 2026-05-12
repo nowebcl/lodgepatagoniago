@@ -37,9 +37,9 @@ export default function AdminCalendar({ bookings, cabins, selectedFilterDate, on
   });
 
   const getBookingsForDay = (day: Date) => {
-    return bookings.filter(booking => {
+    return bookings.filter((booking: any) => {
       if (booking.dates && booking.dates.length > 0) {
-        return booking.dates.some(d => isSameDay(new Date(d), day));
+        return booking.dates.some((d: string) => isSameDay(new Date(d), day));
       } else if (booking.startDate && booking.endDate) {
         const start = new Date(booking.startDate);
         const end = new Date(booking.endDate);
@@ -54,7 +54,7 @@ export default function AdminCalendar({ bookings, cabins, selectedFilterDate, on
   };
 
   const getCabinName = (cabinId: string) => {
-    const name = cabins.find(c => c.id === cabinId)?.name || 'Cabaña';
+    const name = cabins.find((c: any) => c.id === cabinId)?.name || 'Cabaña';
     if (name.includes('Superior')) return 'SUP';
     if (name.includes('Familiar')) return 'FAM';
     if (name.includes('Bosque')) return 'BSQ';
@@ -88,9 +88,9 @@ export default function AdminCalendar({ bookings, cabins, selectedFilterDate, on
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-2">
-        {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(day => (
-          <div key={day} className="text-center text-[9px] font-black text-slate-400 uppercase tracking-widest">
-            {day}
+        {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((dayName: string) => (
+          <div key={dayName} className="text-center text-[9px] font-black text-slate-400 uppercase tracking-widest">
+            {dayName}
           </div>
         ))}
       </div>
@@ -127,7 +127,7 @@ export default function AdminCalendar({ bookings, cabins, selectedFilterDate, on
               </div>
               
               <div className="flex flex-col gap-0.5 overflow-hidden flex-1">
-                {dayBookings.map((b) => (
+                {dayBookings.map((b: any) => (
                   <div 
                     key={b.id} 
                     className={`text-[7px] lg:text-[8px] font-black uppercase tracking-tighter px-1 py-0.5 text-center rounded shadow-sm border truncate ${

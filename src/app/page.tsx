@@ -29,7 +29,7 @@ export default function Home() {
   const [success, setSuccess] = useState(false);
 
   const selectedCabin = useMemo(() => 
-    CABINS.find(c => c.id === selectedCabinId), 
+    CABINS.find((c: any) => c.id === selectedCabinId), 
   [selectedCabinId]);
 
   const numberOfDays = selectedDates.length;
@@ -46,7 +46,7 @@ export default function Home() {
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
       let dates: Date[] = [];
-      snapshot.forEach(doc => {
+      snapshot.forEach((doc: any) => {
         const data = doc.data();
         // New logic: check for 'dates' array first
         if (data.dates && Array.isArray(data.dates)) {
@@ -90,14 +90,14 @@ export default function Home() {
         cabinId: selectedCabinId,
         startDate: sortedDates[0].toISOString(),
         endDate: sortedDates[sortedDates.length - 1].toISOString(),
-        dates: sortedDates.map(d => d.toISOString()),
+        dates: sortedDates.map((d: Date) => d.toISOString()),
         customerName: formData.name,
         customerPhone: formData.phone,
         customerEmail: formData.email,
         totalPrice: totalPrice,
         status: 'confirmed',
         createdAt: new Date().toISOString(),
-      }).catch(error => {
+      }).catch((error: any) => {
         console.error("Error en background al sincronizar con Firebase:", error);
       });
       

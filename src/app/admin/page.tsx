@@ -136,20 +136,20 @@ export default function AdminDashboard() {
     // UI instantánea: Firebase onSnapshot se encargará del resto
     updateDoc(doc(db, 'cabins', id), {
       available: !currentStatus
-    }).catch(err => console.error("Error updating cabin:", err));
+    }).catch((err: any) => console.error("Error updating cabin:", err));
   };
 
   const deleteBooking = (id: string) => {
     if (!db) return;
     // Eliminamos confirm() para máxima velocidad según pedido del usuario
-    deleteDoc(doc(db, 'bookings', id)).catch(err => console.error("Error deleting booking:", err));
+    deleteDoc(doc(db, 'bookings', id)).catch((err: any) => console.error("Error deleting booking:", err));
   };
 
   const markAsPaid = (id: string) => {
     if (!db) return;
     updateDoc(doc(db, 'bookings', id), {
       status: 'pagado'
-    }).catch(err => console.error("Error updating booking status:", err));
+    }).catch((err: any) => console.error("Error updating booking status:", err));
   };
 
   if (!isClient) return null; // Avoid hydration mismatch on initial render
@@ -240,9 +240,9 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
 
   const isCabinOccupiedToday = (cabinId: string) => {
     const today = new Date();
-    return bookings.some(b => {
+    return bookings.some((b: any) => {
       if (b.cabinId === cabinId && b.dates) {
-        return b.dates.some(d => {
+        return b.dates.some((d: string) => {
           const dDate = new Date(d);
           return dDate.getFullYear() === today.getFullYear() && 
                  dDate.getMonth() === today.getMonth() && 
@@ -328,7 +328,7 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                     >
                       <div className="flex items-center gap-2">
                         <div className={`w-1.5 h-1.5 rounded-full ${b.status === 'pagado' ? 'bg-emerald-500' : 'bg-orange-500'}`}></div>
-                        <span className="text-[11px] font-black text-slate-700">{CABINS_INITIAL.find(c => c.id === b.cabinId)?.name.split(' ')[1]}</span>
+                        <span className="text-[11px] font-black text-slate-700">{CABINS_INITIAL.find((c: any) => c.id === b.cabinId)?.name.split(' ')[1]}</span>
                       </div>
                       <span className="text-[10px] font-bold text-slate-400">{b.customerName?.split(' ')[0]}</span>
                     </div>
@@ -358,7 +358,7 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                                 : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
                             }`}
                           >
-                            {CABINS_INITIAL.find(c => c.id === b.cabinId)?.name.replace('Cabaña ', '')}
+                            {CABINS_INITIAL.find((c: any) => c.id === b.cabinId)?.name.replace('Cabaña ', '')}
                           </button>
                         ))}
                       </div>
@@ -394,7 +394,7 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                             <div className="grid grid-cols-2 gap-2 bg-white p-3 rounded-lg border border-slate-100">
                               <div>
                                 <p className="text-[8px] font-black text-slate-300 uppercase">Cabaña</p>
-                                <p className="text-[10px] font-black text-slate-700">{CABINS_INITIAL.find(c => c.id === selectedBooking.cabinId)?.name.replace('Cabaña ', '')}</p>
+                                <p className="text-[10px] font-black text-slate-700">{CABINS_INITIAL.find((c: any) => c.id === selectedBooking.cabinId)?.name.replace('Cabaña ', '')}</p>
                               </div>
                               <div>
                                 <p className="text-[8px] font-black text-slate-300 uppercase">Total</p>
