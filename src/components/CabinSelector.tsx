@@ -15,13 +15,14 @@ export type Cabin = {
   capacity: number;
   price: number;
   available: boolean;
+  description: string;
 };
 
 const CABINS: Cabin[] = [
-  { id: 'c8', name: 'Cabaña Superior', capacity: 8, price: 100000, available: true },
-  { id: 'c5', name: 'Cabaña Familiar', capacity: 5, price: 80000, available: true },
-  { id: 'c4', name: 'Cabaña Bosque', capacity: 4, price: 75000, available: true },
-  { id: 'c2', name: 'Cabaña Refugio', capacity: 2, price: 70000, available: true },
+  { id: 'c8', name: 'Cabaña Superior', capacity: 8, price: 100000, available: true, description: 'Relajo asegurado' },
+  { id: 'c5', name: 'Cabaña Familiar', capacity: 5, price: 80000, available: true, description: 'Tranquilidad absoluta' },
+  { id: 'c4', name: 'Cabaña Bosque', capacity: 4, price: 75000, available: true, description: 'Desconexión total' },
+  { id: 'c2', name: 'Cabaña Refugio', capacity: 2, price: 70000, available: true, description: 'Paz en la naturaleza' },
 ];
 
 export default function CabinSelector({ selectedCabinId, onSelect }: { selectedCabinId: string | null, onSelect: (id: string | null) => void }) {
@@ -66,7 +67,7 @@ export default function CabinSelector({ selectedCabinId, onSelect }: { selectedC
                 </div>
               </div>
               <p className="text-[11px] text-slate-500 mb-1.5 font-medium truncate">
-                {cabin.id === 'c8' ? 'Bosque • Jacuzzi' : cabin.id === 'c5' ? 'Lago • Deck' : 'Vista 360° • Premium'}
+                {cabin.description}
               </p>
               <p className="text-sm font-black text-[#1E293B]">
                 CLP ${cabin.price.toLocaleString('es-CL')} <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">/ noche</span>
