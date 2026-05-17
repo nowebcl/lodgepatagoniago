@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Maestro Unificado: Lodge Patagonia Go</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1E293B;
+            --primary-light: #334155;
+            --accent: #2E7D32;
+            --accent-light: #E8F5E9;
+            --bg-body: #F8FAFC;
+            --bg-doc: #FFFFFF;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--primary);
+            line-height: 1.65;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .document-container {
+            background-color: var(--bg-doc);
+            max-width: 850px;
+            width: 100%;
+            padding: 60px 80px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .document-container {
+                padding: 30px 20px;
+                border-radius: 8px;
+            }
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-dark);
+            margin-top: 32px;
+            margin-bottom: 16px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+        
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            border-bottom: 3px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-top: 10px;
+            margin-bottom: 24px;
+            color: var(--text-dark);
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            color: var(--primary-light);
+            margin-top: 40px;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-top: 28px;
+        }
+        
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.05rem;
+        }
+        
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed var(--accent);
+            transition: all 0.2s ease;
+        }
+        
+        a:hover {
+            color: #1b5e20;
+            border-bottom-style: solid;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border-color);
+            margin: 36px 0;
+        }
+        
+        ul, ol {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-left: 26px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+        
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background-color: #F1F5F9;
+            color: var(--text-dark);
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-size: 0.88em;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        pre {
+            background-color: #0F172A;
+            color: #F8FAFC;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.06);
+        }
+        
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+            font-size: 0.86em;
+            border: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+            margin-bottom: 28px;
+            font-size: 0.98em;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: #F8FAFC;
+            color: var(--text-dark);
+            font-weight: 700;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tr:nth-child(even) td {
+            background-color: #F8FAFC;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .alert {
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin-top: 20px;
+            margin-bottom: 24px;
+            border-left: 5px solid;
+            font-size: 1.02rem;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.02);
+        }
+        
+        .alert.note {
+            background-color: #F0F9FF;
+            border-color: #0284C7;
+            color: #0369A1;
+        }
+        
+        .alert.important {
+            background-color: #FFFBEB;
+            border-color: #D97706;
+            color: #78350F;
+        }
+        
+        .mermaid-placeholder {
+            background-color: #F8FAFC;
+            border: 1px dashed #CBD5E1;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+        
+        .google-doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        .google-doc-header .doc-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .google-doc-instructions {
+            background-color: #F3F4F6;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            border: 1px solid #E5E7EB;
+            color: #4B5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="document-container">
+        <div class="google-doc-header">
+            <div class="doc-logo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span>Google Docs Ready</span>
+            </div>
+            <div>LODGE PATAGONIA GO • MANUAL MAESTRO UNIFICADO</div>
+        </div>
+        
+        <div class="google-doc-instructions">
+            <strong>📋 Instrucciones para Google Docs:</strong> 
+            Este documento está formateado usando elementos HTML semánticos y CSS integrados compatibles con Google Docs. 
+            Para abrirlo en Google Docs: 
+            <ol style="margin-top:5px; margin-bottom:0; padding-left:20px;">
+                <li>Haz doble click en este archivo para abrirlo en tu navegador.</li>
+                <li>Presiona <code>Ctrl + A</code> y luego <code>Ctrl + C</code> para copiar todo el documento.</li>
+                <li>Abre un documento en blanco en <a href="https://docs.new" target="_blank" style="border:none;">docs.new</a> y presiona <code>Ctrl + V</code> para pegarlo con todo el diseño, colores y tablas intactos.</li>
+            </ol>
+        </div>
+        
+        <h1>🏔️ MANUAL MAESTRO UNIFICADO: LODGE PATAGONIA GO</h1>
+<h2>Contexto Operativo y Especificación Técnica Completa</h2>
+<br>
+<p>Este documento unificado contiene toda la información operativa, de negocio y técnica del sistema <strong>Lodge Patagonia Go</strong>. Está estructurado en dos partes: la <strong>Parte I</strong> está escrita en lenguaje natural (ideal para administradores y equipo de negocio), y la <strong>Parte II</strong> detalla la especificación técnica (ideal para desarrolladores que realicen mejoras en el futuro).</p>
+<br>
+<p>---</p>
+<br>
+<h1>📖 PARTE I: CONTEXTO FUNCIONAL Y OPERATIVO</h1>
+<p><em>(Para la Administración y el Equipo de Negocio)</em></p>
+<br>
+<p>---</p>
+<br>
+<h2>🧭 1. ¿Qué es Lodge Patagonia Go?</h2>
+<br>
+<p><strong>Lodge Patagonia Go</strong> es un sistema web inteligente de reservas diseñado específicamente para la gestión de alojamientos turísticos en cabañas. El sistema cuenta con dos portales integrados que se comunican entre sí de forma inmediata:</p>
+<br>
+<ol>
+<li><strong>El Portal del Huésped:</strong> Una página web súper rápida, limpia y optimizada para celulares donde los clientes eligen sus fechas, seleccionan su cabaña favorita y solicitan su reserva en segundos.</li>
+<li><strong>El Panel de Administración:</strong> Una oficina virtual interna donde el equipo del Lodge visualiza la ocupación en un calendario interactivo, confirma pagos y administra qué cabañas están habilitadas para recibir pasajeros.</li>
+<br>
+</ol>
+<p>---</p>
+<br>
+<h2>🛏️ 2. El Catálogo de Cabañas y sus Experiencias</h2>
+<br>
+<p>El Lodge ofrece cuatro tipos de cabañas, cada una orientada a un tipo de huésped y con un mensaje clave que transmite su esencia de descanso y desconexión:</p>
+<br>
+<ul>
+<li><strong>Cabaña Superior (Capacidad: 8 personas):</strong> Enfocada en grupos grandes o familias que buscan la máxima comodidad. Su lema es <strong>&quot;Relajo asegurado&quot;</strong>.</li>
+<li><strong>Cabaña Familiar (Capacidad: 5 personas):</strong> Diseñada para una escapada familiar clásica. Su lema es <strong>&quot;Tranquilidad absoluta&quot;</strong>.</li>
+<li><strong>Cabaña Bosque (Capacidad: 4 personas):</strong> Ideal para parejas o grupos pequeños que buscan internarse en la naturaleza. Su lema es <strong>&quot;Desconexión total&quot;</strong>.</li>
+<li><strong>Cabaña Refugio (Capacidad: 2 personas):</strong> Un rincón íntimo y acogedor, perfecto para parejas. Su lema es <strong>&quot;Paz en la naturaleza&quot;</strong>.</li>
+<br>
+</ul>
+<p>---</p>
+<br>
+<h2>👤 3. La Experiencia del Cliente: ¿Cómo se hace una reserva?</h2>
+<br>
+<p>El proceso de reserva para un huésped se diseñó para ser lo más rápido y libre de frustración posible:</p>
+<br>
+<pre><code class="language-text">[Elige Fechas en el Calendario] ──&gt; [Elige Tipo de Cabaña] ──&gt; [Rellena sus Datos] ──&gt; [Descarga Comprobante y Confeti]</code></pre>
+<br>
+<ol>
+<li><strong>Selección de Fechas:</strong> El cliente ingresa a la web y ve un calendario mensual en español. Las fechas que ya están reservadas y pagadas por otros clientes aparecen tachadas y en color rojo, por lo que es imposible que ocurra una doble reserva. El cliente hace click sobre los días que desea alojar.</li>
+<li><strong>Selección de Cabaña:</strong> Al hacer click en su cabaña preferida, el sistema le muestra el precio por noche, la capacidad máxima permitida de personas, su lema inspirador y calcula de forma automática el precio total según las noches seleccionadas.</li>
+<li><strong>Formulario de Datos:</strong> Al presionar &quot;Reservar&quot;, se despliega un formulario muy sencillo que solicita tres datos clave: <em>Nombre Completo, Teléfono de contacto y Correo electrónico</em>.</li>
+<li><strong>Confirmación y Descarga:</strong> Al confirmar la reserva, la pantalla celebra lanzando confeti digital de colores y muestra un mensaje de éxito. De forma automática, <strong>el sistema descarga un archivo de texto en el celular o computador del cliente</strong>. Este archivo funciona como un comprobante inmediato que detalla:</li>
+</ol>
+<ul>
+<li>Un código único de reserva.</li>
+<li>Las fechas de estadía y la cabaña seleccionada.</li>
+<li>Los datos del cliente.</li>
+<li><strong>Instrucciones de Pago:</strong> Los datos de la cuenta bancaria del Lodge para que el cliente realice la transferencia del dinero dentro de las próximas 2 horas para asegurar su cupo.</li>
+<br>
+</ul>
+<p>---</p>
+<br>
+<h2>🛡️ 4. La Gestión del Lodge: ¿Cómo opera el Administrador?</h2>
+<br>
+<p>El panel de administración interno permite al personal del Lodge controlar todo el flujo operativo en tiempo real:</p>
+<br>
+<h3>4.1 El Calendario de Control Visual</h3>
+<p>El administrador tiene una vista mensual donde cada día muestra las cabañas que están reservadas ese día. Para facilitar la lectura rápida, el sistema usa un código de colores muy intuitivo:</p>
+<ul>
+<li><strong>Color Naranja (Pendiente):</strong> Significa que el cliente completó la reserva en la web, pero el Lodge aún no ha verificado la transferencia bancaria.</li>
+<li><strong>Color Verde (Pagado):</strong> Significa que el pago ha sido verificado y la reserva está 100% asegurada.</li>
+<br>
+</ul>
+<h3>4.2 Acciones de Reserva con un Click</h3>
+<p>Cuando el administrador selecciona un día específico en su calendario, ve los datos del cliente (nombre, teléfono y correo) y puede realizar dos acciones clave:</p>
+<ol>
+<li><strong>Confirmar Pago:</strong> Al verificar que llegó la transferencia del cliente a la cuenta del Lodge, presiona este botón y la reserva pasa a estado <strong>Pagado (Verde)</strong> al instante.</li>
+<li><strong>Liberar Cabaña:</strong> Si el cliente canceló su viaje o pasaron las 2 horas de plazo sin realizar la transferencia, el administrador presiona este botón. La reserva se elimina del sistema y <strong>las fechas quedan disponibles de inmediato</strong> en la página web pública para que otro cliente las pueda reservar, sin necesidad de actualizar nada.</li>
+<br>
+</ol>
+<h3>4.3 Control de Inventario (Interruptor de Mantención)</h3>
+<p>Si una cabaña necesita reparaciones, fumigación o una limpieza profunda imprevista, el administrador tiene interruptores para &quot;apagar&quot; cabañas. Si desactiva una cabaña en su panel, esta desaparecerá de las opciones elegibles en la web pública de inmediato, evitando que los huéspedes agenden días en una cabaña que no está en condiciones óptimas.</p>
+<br>
+<p>---</p>
+<br>
+<h2>⚡ 5. La Magia del Tiempo Real (Sin Tecnicismos)</h2>
+<br>
+<p>Una de las mayores virtudes de esta aplicación es que funciona en <strong>tiempo real absoluto</strong>.</p>
+<p>Esto significa que no hay botones de &quot;recargar&quot; o &quot;actualizar&quot;. Si un cliente reserva una cabaña desde su celular en Santiago, esa cabaña aparecerá como bloqueada en la pantalla de otra persona que esté cotizando desde Concepción en el mismo segundo. Lo mismo ocurre cuando el administrador libera una fecha: se desbloquea al instante en las pantallas de todos los usuarios conectados a la web. Esto elimina las posibilidades de sobreventa y le da un aspecto sumamente moderno e interactivo al negocio.</p>
+<br>
+<p>---</p>
+<br>
+<h2>📈 6. Plan de Ruta para Mejoras Futuras (Visión de Negocios)</h2>
+<br>
+<p>Para llevar el negocio al siguiente nivel, la plataforma está estructurada para crecer fácilmente en las siguientes áreas de valor:</p>
+<br>
+<h3>A. Automatización del Recaudo (Pagos Online)</h3>
+<ul>
+<li><strong>Cómo funciona hoy:</strong> El cliente reserva y hace una transferencia manual. El Lodge tiene que revisar la cuenta corriente del banco y marcar la reserva como pagada manualmente.</li>
+<li><strong>Cómo mejorarlo:</strong> Conectar la web con plataformas como <strong>Webpay Plus (Transbank), Flow o Mercado Pago</strong>. El cliente pagaría con su tarjeta de crédito o débito directamente en la web y, al ser exitoso, el sistema marcaría la reserva como <strong>Pagada (Verde)</strong> de manera automática, sin intervención humana.</li>
+<br>
+</ul>
+<h3>B. Notificaciones de Fidelización (WhatsApp)</h3>
+<ul>
+<li><strong>Cómo funciona hoy:</strong> El cliente recibe un correo electrónico o descarga su comprobante en texto.</li>
+<li><strong>Cómo mejorarlo:</strong> Conectar el sistema a una API de envío de mensajes de WhatsApp. Al momento de reservar, el cliente recibiría un mensaje automático y profesional en su celular diciendo: <em>&quot;¡Hola Juan! Hemos recibido tu solicitud para la Cabaña Superior del 20 al 25 de Enero. Recuerda realizar tu transferencia para asegurar tu estadía.&quot;</em></li>
+<br>
+</ul>
+<h3>C. Gestión de Tarifas Dinámicas (Temporada Alta / Baja)</h3>
+<ul>
+<li><strong>Cómo funciona hoy:</strong> Los precios de las cabañas son fijos.</li>
+<li><strong>Cómo mejorarlo:</strong> Añadir una sección en el panel de administración que le permita al Lodge cambiar los precios por noche de las cabañas según el mes del año, permitiendo cobrar tarifas de temporada alta en verano o feriados, y tarifas promocionales de temporada baja de forma ágil.</li>
+<br>
+</ul>
+<p>---</p>
+<br>
+<h1>💻 PARTE II: ESPECIFICACIÓN TÉCNICA Y ARQUITECTURA</h1>
+<p><em>(Para Desarrolladores e Ingenieros)</em></p>
+<br>
+<p>---</p>
+<br>
+<h2>🗺️ 1. Arquitectura y Stack Tecnológico</h2>
+<br>
+<p>La aplicación se construyó con un enfoque moderno de alto rendimiento en el frontend, acoplado con una base de datos en tiempo real de baja latencia para evitar sobreventas y asegurar consistencia instantánea.</p>
+<br>
+<div class="mermaid-placeholder"><strong>📊 [Diagrama Mermaid]:</strong><pre style="background:#f1f5f9;color:#0f172a;padding:12px;border-radius:6px;font-size:0.8em;text-align:left;overflow-x:auto;">graph TD
+    Client[&quot;Portal de Reservas (Huésped)&quot;] &lt;--&gt; Firestore[(&quot;Firebase Firestore Database&quot;)]
+    Admin[&quot;Panel de Administración (Lodge)&quot;] &lt;--&gt; Firestore
+    Client --&gt;|Autodescarga| Receipt[&quot;Comprobante TXT (Cliente)&quot;]
+    Client --&gt;|Confeti| Anim[&quot;canvas-confetti (Feedback UI)&quot;]</pre></div>
+<br>
+<h3>Stack de Tecnologías</h3>
+<ul>
+<li><strong>Framework:</strong> Next.js (Versión 16+ con App Router y renderizado de componentes de cliente reactivos).</li>
+<li><strong>Lenguaje:</strong> TypeScript para tipado estricto y estabilidad del software.</li>
+<li><strong>Estilos:</strong> Tailwind CSS (v4) con custom variables globales para la paleta de colores del Lodge (ej. <code>var(--forest-green)</code>).</li>
+<li><strong>Base de Datos:</strong> Firebase Firestore para almacenamiento y sincronización reactiva bidireccional en tiempo real.</li>
+<li><strong>Manejo de Fechas:</strong> date-fns con localización en español para el cálculo de intervalos de reserva y formateos.</li>
+<li><strong>Animaciones:</strong> Framer Motion para transiciones fluidas de pop-ups y elementos de la interfaz.</li>
+<br>
+</ul>
+<p>---</p>
+<br>
+<h2>📁 2. Estructura de Directorios</h2>
+<br>
+<p>La organización del código sigue la convención estándar del App Router de Next.js:</p>
+<br>
+<pre><code class="language-text">LODGE/
+├── src/
+│   ├── app/
+│   │   ├── admin/
+│   │   │   └── page.tsx        # Panel de Administración de Reservas y Disponibilidad
+│   │   ├── globals.css         # Estilos globales y variables de diseño
+│   │   ├── layout.tsx          # Layout principal (fuente, metadatos SEO)
+│   │   └── page.tsx            # Portal del Cliente (Home - Selector e información)
+│   ├── components/
+│   │   ├── ActionFooter.tsx    # Resumen inferior de precios y botón de reservar
+│   │   ├── AdminCalendar.tsx   # Calendario interactivo especializado para administración
+│   │   ├── CabinSelector.tsx   # Visualizador de tarjetas de cabañas y sus detalles
+│   │   ├── Calendar.tsx        # Calendario de reserva multi-fecha para huéspedes
+│   │   └── Header.tsx          # Cabecera / Navbar responsiva
+│   └── lib/
+│       └── firebase.ts         # Inicialización segura y exportación de Firebase Firestore
+├── public/                     # Recursos estáticos (Logos, imágenes)
+├── package.json                # Dependencias y scripts de ejecución
+└── tsconfig.json               # Configuración de compilación de TypeScript</code></pre>
+<br>
+<p>---</p>
+<br>
+<h2>🗄️ 3. Modelo de Datos y Base de Datos (Firestore)</h2>
+<br>
+<p>El sistema opera con dos colecciones principales en <strong>Cloud Firestore</strong>.</p>
+<br>
+<h3>3.1 Colección: <code>bookings</code> (Reservas)</h3>
+<p>Cada documento representa el agendamiento de una cabaña para un conjunto específico de fechas.</p>
+<br>
+<table><thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td>:---</td><td>:---</td><td>:---</td></tr><tr><td><code>id</code></td><td><code>string</code></td><td>ID auto-generado por Firestore.</td></tr><tr><td><code>cabinId</code></td><td><code>string</code></td><td>ID de la cabaña asociada (<code>c8</code>, <code>c5</code>, <code>c4</code>, <code>c2</code>).</td></tr><tr><td><code>customerName</code></td><td><code>string</code></td><td>Nombre completo del huésped.</td></tr><tr><td><code>customerPhone</code></td><td><code>string</code></td><td>Número telefónico de contacto (+56...).</td></tr><tr><td><code>customerEmail</code></td><td><code>string</code></td><td>Correo electrónico de contacto.</td></tr><tr><td><code>dates</code></td><td><code>array (string)</code></td><td>Lista ordenada de fechas reservadas en formato ISO (<code>YYYY-MM-DD...</code>).</td></tr><tr><td><code>startDate</code></td><td><code>string</code></td><td>Fecha de llegada (Check-in) en formato ISO.</td></tr><tr><td><code>endDate</code></td><td><code>string</code></td><td>Fecha de salida (Check-out) en formato ISO.</td></tr><tr><td><code>totalPrice</code></td><td><code>number</code></td><td>Precio total cobrado por la estancia completa.</td></tr><tr><td><code>status</code></td><td><code>string</code></td><td>Estado del pago (<code>confirmed</code> para reserva web inicial, <code>pagado</code> tras confirmación admin).</td></tr><tr><td><code>createdAt</code></td><td><code>string</code></td><td>Timestamp de creación en formato ISO.</td></tr></tbody></table>
+<br>
+<h3>3.2 Colección: <code>cabins</code> (Cabañas)</h3>
+<p>Almacena el estado y configuración de cada cabaña física disponible para reserva.</p>
+<br>
+<table><thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td>:---</td><td>:---</td><td>:---</td></tr><tr><td><code>id</code></td><td><code>string</code></td><td>Clave única de cabaña (<code>c8</code>, <code>c5</code>, <code>c4</code>, <code>c2</code>).</td></tr><tr><td><code>name</code></td><td><code>string</code></td><td>Nombre visible del inmueble.</td></tr><tr><td><code>price</code></td><td><code>number</code></td><td>Tarifa diaria / precio por noche (CLP).</td></tr><tr><td><code>available</code></td><td><code>boolean</code></td><td>Interruptor administrativo general para habilitar/deshabilitar reservas.</td></tr></tbody></table>
+<br>
+<div class="alert note"><strong>💡 NOTA:</strong> <strong>Sembrado de Datos Automático:</strong> Si la colección <code>cabins</code> está vacía en Firestore al iniciar el Panel de Admin, la función <code>syncCabins</code> inicializará los datos automáticamente con los precios estándar preconfigurados (<code>CABINS_INITIAL</code>).</div>
+<br>
+<p>---</p>
+<br>
+<h2>💻 4. Desglose de Componentes del Portal del Cliente</h2>
+<br>
+<h3>4.1 <code>src/app/page.tsx</code></h3>
+<p>Es la página principal del cliente que actúa como orquestador de estado.</p>
+<ul>
+<li><strong>Manejo de Estado Principal:</strong></li>
+<li><code>selectedDates</code>: Array de objetos tipo <code>Date</code> seleccionados por el usuario.</li>
+<li><code>selectedCabinId</code>: ID de la cabaña activa.</li>
+<li><code>blockedDates</code>: Array dinámico de fechas bloqueadas por reservas previas de esa cabaña.</li>
+<li><strong>Optimizaciones Clave:</strong></li>
+<li><strong>Envío UI Instantáneo:</strong> La función <code>submitBooking</code> realiza la escritura en Firestore en segundo plano (background thread sin bloquear con <code>await</code>). Muestra inmediatamente la ventana de confirmación y confeti al usuario para crear una experiencia de velocidad inigualable.</li>
+<li><strong>Generador Automático de Comprobante:</strong> Al reservar, la aplicación compila un archivo de texto formateado (<code>.txt</code>) con los datos de transferencia bancaria, crea un <code>Blob</code> nativo en el navegador y gatilla una descarga automática invisible para el usuario.</li>
+<br>
+</ul>
+<h3>4.2 <code>src/components/CabinSelector.tsx</code></h3>
+<p>Visualiza las cabañas disponibles en un formato Bento Grid.</p>
+<ul>
+<li><strong>Efecto Responsivo:</strong> En móviles, tiene un comportamiento <code>snap-x</code> horizontal que permite deslizar cabañas con gestos naturales del dedo. En pantallas grandes (LG en adelante), se transforma automáticamente a un formato vertical estructurado.</li>
+<li><strong>Textos de Marketing Integrados:</strong> Se configuraron textos emocionales de relajo debajo del nombre de cada cabaña:</li>
+<li>Cabaña Superior: <code>&quot;Relajo asegurado&quot;</code></li>
+<li>Cabaña Familiar: <code>&quot;Tranquilidad absoluta&quot;</code></li>
+<li>Cabaña Bosque: <code>&quot;Desconexión total&quot;</code></li>
+<li>Cabaña Refugio: <code>&quot;Paz en la naturaleza&quot;</code></li>
+<br>
+</ul>
+<h3>4.3 <code>src/components/Calendar.tsx</code></h3>
+<p>El motor de selección de fechas.</p>
+<ul>
+<li><strong>Selección Múltiple:</strong> Utiliza <code>date-fns</code> para iterar y pintar las grillas mensuales dinámicamente.</li>
+<li><strong>Seguridad:</strong> Valida en tiempo real que el usuario no pueda hacer click en fechas pasadas a hoy (<code>isBefore(day, today)</code>) ni en fechas contenidas dentro del arreglo reactivo de <code>blockedDates</code>.</li>
+<li><strong>Visualización:</strong> Las celdas bloqueadas se muestran tachadas y en color rojo tenue.</li>
+<br>
+</ul>
+<p>---</p>
+<br>
+<h2>🛡️ 5. Desglose del Panel de Administración</h2>
+<br>
+<p>Ubicado en la ruta <a href="file:///c:/Users/oragn/Downloads/LODGE/src/app/admin/page.tsx" target="_blank">src/app/admin/page.tsx</a>, es un sistema robusto de gestión interna.</p>
+<br>
+<div class="mermaid-placeholder"><strong>📊 [Diagrama Mermaid]:</strong><pre style="background:#f1f5f9;color:#0f172a;padding:12px;border-radius:6px;font-size:0.8em;text-align:left;overflow-x:auto;">sequenceDiagram
+    actor Admin as Administrador
+    participant DB as Firebase Firestore
+    participant Calendar as AdminCalendar (Visual)
+
+    Admin-&gt;&gt;DB: Iniciar Sesión (SessionStorage token)
+    DB--&gt;&gt;Admin: Retorna reservas en tiempo real (onSnapshot)
+    Admin-&gt;&gt;Calendar: Selecciona un día del calendario
+    Calendar--&gt;&gt;Admin: Despliega lista de reservas para ese día
+    rect rgb(240, 248, 255)
+        Admin-&gt;&gt;DB: click en &quot;Confirmar Pago&quot;
+        DB-&gt;&gt;DB: Modifica status a &#x27;pagado&#x27;
+    end
+    rect rgb(255, 240, 240)
+        Admin-&gt;&gt;DB: click en &quot;Liberar Cabaña&quot;
+        DB-&gt;&gt;DB: Borra documento en Firestore (fecha disponible al instante)
+    end</pre></div>
+<br>
+<h3>5.1 Autenticación</h3>
+<ul>
+<li>Implementada por motivos de velocidad y simplicidad usando un login de sesión persistido en <code>sessionStorage</code> (<code>lodge_admin_auth</code>).</li>
+<li>Credencial de administrador: <code>contacto@lodgepatagonia.cl</code></li>
+<br>
+</ul>
+<h3>5.2 Controladores de Reservas</h3>
+<ul>
+<li><strong>Confirmación de Pago:</strong> Permite cambiar el estado de la reserva de <code>confirmed</code> (pendiente) a <code>pagado</code> con un solo click. Esto cambia el color del indicador en el calendario a verde esmeralda.</li>
+<li><strong>Liberar Cabaña:</strong> Borra físicamente el registro de la reserva de Firestore. Al estar atado a sockets y listeners de tiempo real (<code>onSnapshot</code>), las fechas correspondientes en el portal del cliente se liberan <strong>al milisegundo</strong>, sin necesidad de recargar la página.</li>
+<br>
+</ul>
+<h3>5.3 Interruptores de Disponibilidad de Cabañas (Kill-switch)</h3>
+<ul>
+<li>En la barra lateral derecha/inferior, el administrador puede forzar el apagado manual de cualquier cabaña. Esto modifica la propiedad <code>available</code> en Firestore, quitándola del flujo de reservas de manera temporal si se requiere hacer mantención o limpieza profunda.</li>
+<br>
+</ul>
+<p>---</p>
+<br>
+<h2>🔄 6. Flujos Críticos de Datos</h2>
+<br>
+<h3>6.1 Flujo de Sincronización de Fechas Bloqueadas</h3>
+<p>El flujo reactivo que asegura que dos usuarios no reserven la misma cabaña simultáneamente:</p>
+<br>
+<pre><code class="language-text">[Cliente selecciona Cabaña X]
+       │
+       ▼
+[Gatilla useEffect en page.tsx]
+       │
+       ▼
+[onSnapshot lee &#x27;bookings&#x27; donde cabinId == X]
+       │
+       ▼
+[Parsea rangos/arrays de &#x27;dates&#x27; en formato Date]
+       │
+       ▼
+[Actualiza estado local &#x27;blockedDates&#x27;]
+       │
+       ▼
+[Calendar.tsx bloquea visualmente y deshabilita inputs para esos días]</code></pre>
+<br>
+<p>---</p>
+<br>
+<h2>🚀 7. Guía Práctica de Futuras Mejoras</h2>
+<br>
+<p>Si necesitas expandir la plataforma en el futuro, aquí tienes una guía directa de implementación paso a paso para las mejoras más comunes:</p>
+<br>
+<h3>7.1 Integración de Pasarela de Pago (ej. Webpay Plus / Transbank / Stripe)</h3>
+<p>Actualmente, el portal genera un comprobante con instrucciones de transferencia manual. Para automatizar pagos con tarjeta:</p>
+<ol>
+<li><strong>Instalación del SDK:</strong> Instala el cliente oficial de transbank o stripe:</li>
+<pre><code class="language-bash">    npm install transbank-sdk</code></pre>
+<li><strong>Ruta de API de Transacción:</strong> Crea una API Route en Next.js (<code>src/app/api/pay/route.ts</code>) que genere la transacción enviando el precio total de la cabaña seleccionada.</li>
+<li><strong>Redirección:</strong> Modifica <code>submitBooking</code> en <code>page.tsx</code> para que en vez de mostrar éxito de inmediato, redirija al usuario a la URL de pago de Transbank.</li>
+<li><strong>Confirmación:</strong> Al completarse exitosamente la transacción en la pasarela de pago, actualiza el estado de la reserva de <code>confirmed</code> a <code>pagado</code> automáticamente en Firestore utilizando un Webhook.</li>
+<br>
+</ol>
+<h3>7.2 Notificaciones Automáticas por WhatsApp (ej. Twilio API)</h3>
+<p>Para avisar al administrador o confirmar automáticamente al cliente vía WhatsApp:</p>
+<ol>
+<li><strong>Crear un webhook / API route:</strong> (<code>src/app/api/whatsapp/route.ts</code>).</li>
+<li><strong>Conexión Twilio:</strong> Configura Twilio API con tu número telefónico Sandbox o cuenta verificada.</li>
+<li><strong>Llamada desde el Formulario:</strong> En <code>submitBooking</code>, realiza un fetch a tu ruta de API enviando el número del cliente y la cabaña reservada:</li>
+<pre><code class="language-typescript">    fetch(&#x27;/api/whatsapp&#x27;, {
+      method: &#x27;POST&#x27;,
+      body: JSON.stringify({ phone: formData.phone, msg: &#x27;¡Tu cabaña está lista!&#x27; })
+    });</code></pre>
+<br>
+</ol>
+<h3>7.3 Autenticación de Administradores con Firebase Auth</h3>
+<p>Si deseas cambiar el login simple actual por cuentas reales e individuales de administración con contraseñas seguras y encriptadas:</p>
+<ol>
+<li>Activa <strong>Email/Password Provider</strong> en tu consola de Firebase Auth.</li>
+<li>Importa el módulo <code>auth</code> creado en <code>src/lib/firebase.ts</code>.</li>
+<li>Modifica el formulario de login de <code>src/app/admin/page.tsx</code> para usar <code>signInWithEmailAndPassword</code>:</li>
+<pre><code class="language-typescript">    import { signInWithEmailAndPassword } from &#x27;firebase/auth&#x27;;
+    import { auth } from &#x27;@/lib/firebase&#x27;;
+
+    // Dentro del login
+    await signInWithEmailAndPassword(auth, username, password);</code></pre>
+<li>Usa el hook <code>onAuthStateChanged</code> para verificar si hay una sesión activa de forma segura.</li>
+<br>
+</ol>
+<p>---</p>
+<br>
+<p><em>Este documento maestro representa la base operativa y técnica unificada de Lodge Patagonia Go. Mantenlo actualizado ante cada cambio en el ecosistema.</em></p>
+<br>
+    </div>
+</body>
+</html>
