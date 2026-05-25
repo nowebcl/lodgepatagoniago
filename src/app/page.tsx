@@ -85,19 +85,34 @@ export default function Home() {
     try {
       const sortedDates = [...selectedDates].sort((a, b) => a.getTime() - b.getTime());
       
+      // 1. Guardar la reserva en Firestore desde el cliente (instantáneo, estable y sin cuelgues)
+      console.log("[Client] Creando reserva pendiente en Firestore...");
+      const docRef = await addDoc(collection(db, 'bookings'), {
+        cabinId: selectedCabinId,
+        startDate: sortedDates[0].toISOString(),
+        endDate: sortedDates[sortedDates.length - 1].toISOString(),
+        dates: sortedDates.map((d: Date) => d.toISOString()),
+        customerName: formData.name,
+        customerPhone: formData.phone,
+        customerEmail: formData.email,
+        totalPrice: totalPrice,
+        status: 'pending_payment',
+        createdAt: new Date().toISOString(),
+      });
+      console.log("[Client] Reserva creada con éxito. ID:", docRef.id);
+
+      // 2. Enviar el ID de reserva al servidor para generar el checkout en Flow
+      console.log("[Client] Solicitando link de Flow para la reserva...");
       const response = await fetch('/api/payments/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          cabinId: selectedCabinId,
-          cabinName: selectedCabin?.name,
-          dates: sortedDates.map((d: Date) => d.toISOString()),
-          customerName: formData.name,
-          customerPhone: formData.phone,
+          bookingId: docRef.id,
           customerEmail: formData.email,
           totalPrice: totalPrice,
+          cabinName: selectedCabin?.name,
         }),
       });
 
@@ -107,8 +122,9 @@ export default function Home() {
         throw new Error(data.error || 'No se pudo iniciar el proceso de pago');
       }
 
-      // Redirigir al cliente al portal de pagos de Flow
+      // 3. Redirigir al portal seguro de Flow
       if (data.url) {
+        console.log("[Client] Redirigiendo a Flow:", data.url);
         window.location.href = data.url;
       } else {
         throw new Error('No se recibió la URL de pago de Flow');

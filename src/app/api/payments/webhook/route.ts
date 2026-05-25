@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getBookingREST, updateBookingStatusREST } from '@/lib/firebaseRest';
 import { FlowService } from '@/lib/flow';
 
 export async function POST(req: NextRequest) {
   try {
-    if (!db) {
-      return NextResponse.json({ error: 'Base de datos no configurada' }, { status: 500 });
-    }
-
     // Flow envía la notificación mediante una petición POST urlencoded con el campo 'token'
     const formData = await req.formData();
     const token = formData.get('token');
@@ -25,26 +20,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Orden de comercio no encontrada en respuesta de Flow' }, { status: 400 });
     }
 
-    const bookingRef = doc(db, 'bookings', bookingId);
-    const bookingSnap = await getDoc(bookingRef);
-
-    if (!bookingSnap.exists()) {
+    const booking = await getBookingREST(bookingId);
+    if (!booking) {
       return NextResponse.json({ error: 'Reserva no encontrada en Firebase' }, { status: 404 });
     }
 
     // 2. Si el estado de Flow es 2 (Pagado), actualizar la reserva a 'confirmed'
     if (flowStatus.status === 2) {
-      await updateDoc(bookingRef, {
-        status: 'confirmed',
-        flowStatus: 2,
-        paymentDate: flowStatus.paymentData?.date || new Date().toISOString(),
-      });
+      await updateBookingStatusREST(
+        bookingId,
+        'confirmed',
+        2,
+        flowStatus.paymentData?.date || new Date().toISOString()
+      );
       console.log(`[Flow Webhook] Reserva ${bookingId} pagada y confirmada exitosamente.`);
     } else if (flowStatus.status === 3) {
-      await updateDoc(bookingRef, {
-        status: 'rejected',
-        flowStatus: 3,
-      });
+      await updateBookingStatusREST(bookingId, 'rejected', 3);
       console.log(`[Flow Webhook] Reserva ${bookingId} rechazada o anulada.`);
     }
 
