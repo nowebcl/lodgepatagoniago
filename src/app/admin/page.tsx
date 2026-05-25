@@ -327,7 +327,13 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                       className="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl cursor-pointer hover:bg-slate-100 transition-all border border-slate-100"
                     >
                       <div className="flex items-center gap-2">
-                        <div className={`w-1.5 h-1.5 rounded-full ${b.status === 'pagado' ? 'bg-emerald-500' : 'bg-orange-500'}`}></div>
+                        <div className={`w-1.5 h-1.5 rounded-full ${
+                          (b.status === 'confirmed' || b.status === 'pagado') 
+                            ? 'bg-emerald-500 animate-pulse' 
+                            : b.status === 'rejected' 
+                              ? 'bg-rose-500' 
+                              : 'bg-amber-400'
+                        }`}></div>
                         <span className="text-[11px] font-black text-slate-700">{CABINS_INITIAL.find((c: any) => c.id === b.cabinId)?.name.split(' ')[1]}</span>
                       </div>
                       <span className="text-[10px] font-bold text-slate-400">{b.customerName?.split(' ')[0]}</span>
@@ -352,12 +358,19 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                           <button
                             key={b.id}
                             onClick={() => setSelectedBookingId(b.id)}
-                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all border ${
+                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all border flex items-center gap-1.5 ${
                               selectedBookingId === b.id
                                 ? 'bg-slate-900 text-white border-slate-900'
                                 : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
                             }`}
                           >
+                            <span className={`w-1.5 h-1.5 rounded-full ${
+                              (b.status === 'confirmed' || b.status === 'pagado') 
+                                ? 'bg-emerald-500 animate-pulse' 
+                                : b.status === 'rejected' 
+                                  ? 'bg-rose-500' 
+                                  : 'bg-amber-400'
+                            }`}></span>
                             {CABINS_INITIAL.find((c: any) => c.id === b.cabinId)?.name.replace('Cabaña ', '')}
                           </button>
                         ))}
@@ -385,9 +398,17 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                                 </div>
                               </div>
                               <div className={`text-[8px] px-2 py-0.5 rounded font-black uppercase border ${
-                                selectedBooking.status === 'pagado' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-orange-50 text-orange-700 border-orange-100'
+                                (selectedBooking.status === 'confirmed' || selectedBooking.status === 'pagado')
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                  : selectedBooking.status === 'rejected'
+                                    ? 'bg-rose-50 text-rose-700 border-rose-100'
+                                    : 'bg-amber-50 text-amber-700 border-amber-100'
                               }`}>
-                                {selectedBooking.status === 'pagado' ? 'Pagado' : 'Agendada'}
+                                {(selectedBooking.status === 'confirmed' || selectedBooking.status === 'pagado')
+                                  ? 'Pagado'
+                                  : selectedBooking.status === 'rejected'
+                                    ? 'Fallido'
+                                    : 'Pendiente'}
                               </div>
                             </div>
 
@@ -397,13 +418,17 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                                 <p className="text-[10px] font-black text-slate-700">{CABINS_INITIAL.find((c: any) => c.id === selectedBooking.cabinId)?.name.replace('Cabaña ', '')}</p>
                               </div>
                               <div>
-                                <p className="text-[8px] font-black text-slate-300 uppercase">Total</p>
-                                <p className="text-[10px] font-black text-[var(--forest-green)]">${selectedBooking.totalPrice?.toLocaleString('es-CL')}</p>
+                                <p className="text-[8px] font-black text-slate-300 uppercase">Total Reserva</p>
+                                <p className="text-[10px] font-black text-slate-700">${selectedBooking.totalPrice?.toLocaleString('es-CL')}</p>
+                              </div>
+                              <div className="col-span-2 pt-2 mt-1 border-t border-slate-100 flex justify-between text-[9px] font-black uppercase text-slate-400">
+                                <span>Abono (50%): <span className="text-[var(--forest-green)]">${(selectedBooking.paidAmount || Math.round((selectedBooking.totalPrice || 0) / 2))?.toLocaleString('es-CL')}</span></span>
+                                <span>Por Pagar: <span className="text-slate-700">${(selectedBooking.paidAmount || Math.round((selectedBooking.totalPrice || 0) / 2))?.toLocaleString('es-CL')}</span></span>
                               </div>
                             </div>
 
                             <div className="flex gap-2">
-                              {selectedBooking.status !== 'pagado' && (
+                              {selectedBooking.status !== 'confirmed' && selectedBooking.status !== 'pagado' && (
                                 <button 
                                   onClick={() => markAsPaid(selectedBooking.id)}
                                   className="flex-1 bg-emerald-600 text-white font-black py-2.5 rounded-lg hover:bg-emerald-700 transition-all text-[9px] uppercase tracking-wider"

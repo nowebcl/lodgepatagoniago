@@ -95,7 +95,9 @@ CABAÑA: ${bookingData.cabinId === 'c8' ? 'Cabaña Superior (8)' :
          bookingData.cabinId === 'c4' ? 'Cabaña Bosque (4)' : 'Cabaña Refugio (2)'}
 FECHAS CONTRATADAS: ${datesList}
 TOTAL NOCHES: ${bookingData.dates ? bookingData.dates.length : 0}
-VALOR TOTAL PAGADO: CLP $${bookingData.totalPrice?.toLocaleString('es-CL')}
+VALOR TOTAL RESERVA: CLP $${bookingData.totalPrice?.toLocaleString('es-CL')}
+ABONO GARANTÍA PAGADO (50%): CLP $${(bookingData.paidAmount || Math.round(bookingData.totalPrice / 2))?.toLocaleString('es-CL')}
+SALDO PENDIENTE (AL LLEGAR): CLP $${(bookingData.paidAmount || Math.round(bookingData.totalPrice / 2))?.toLocaleString('es-CL')}
 
 DATOS DEL HUÉSPED:
 -----------------------------------------
@@ -241,10 +243,22 @@ Lodge Patagonia
                 <span className="font-bold text-[#1E293B]">{flowInfo.paymentData.media}</span>
               </div>
             )}
-            <div className="flex justify-between pt-3 border-t border-slate-200/60 text-sm">
-              <span className="text-[#1E293B] font-extrabold">Total Pagado:</span>
-              <span className="font-black text-[var(--forest-green)] text-base">
+            <div className="flex justify-between pt-3 border-t border-slate-200/60 text-slate-700">
+              <span className="text-slate-400 font-medium">Total Reserva:</span>
+              <span className="font-bold text-[#1E293B]">
                 CLP ${bookingData?.totalPrice?.toLocaleString('es-CL')}
+              </span>
+            </div>
+            <div className="flex justify-between text-[var(--forest-green)] font-black">
+              <span>Garantía Pagada (50%):</span>
+              <span className="text-base">
+                CLP ${(bookingData?.paidAmount || Math.round((bookingData?.totalPrice || 0) / 2))?.toLocaleString('es-CL')}
+              </span>
+            </div>
+            <div className="flex justify-between text-slate-400 font-medium">
+              <span>Saldo al llegar (50%):</span>
+              <span>
+                CLP ${(bookingData?.paidAmount || Math.round((bookingData?.totalPrice || 0) / 2))?.toLocaleString('es-CL')}
               </span>
             </div>
           </div>

@@ -34,6 +34,7 @@ export default function Home() {
 
   const numberOfDays = selectedDates.length;
   const totalPrice = selectedCabin ? selectedCabin.price * numberOfDays : 0;
+  const halfPrice = Math.round(totalPrice / 2);
 
   // Fetch blocked dates when a cabin is selected
   useEffect(() => {
@@ -48,6 +49,12 @@ export default function Home() {
       let dates: Date[] = [];
       snapshot.forEach((doc: any) => {
         const data = doc.data();
+        
+        // Solo bloqueamos fechas de reservas confirmadas o pagadas
+        if (data.status !== 'confirmed' && data.status !== 'pagado') {
+          return;
+        }
+
         // New logic: check for 'dates' array first
         if (data.dates && Array.isArray(data.dates)) {
           data.dates.forEach((dStr: string) => {
@@ -96,13 +103,14 @@ export default function Home() {
         customerPhone: formData.phone,
         customerEmail: formData.email,
         totalPrice: totalPrice,
+        paidAmount: halfPrice, // 50% a pagar
         status: 'pending_payment',
         createdAt: new Date().toISOString(),
       });
       console.log("[Client] Reserva creada con éxito. ID:", docRef.id);
 
-      // 2. Enviar el ID de reserva al servidor para generar el checkout en Flow
-      console.log("[Client] Solicitando link de Flow para la reserva...");
+      // 2. Enviar el ID de reserva al servidor para generar el checkout en Flow por el 50%
+      console.log("[Client] Solicitando link de Flow para la reserva (50% abono)...");
       const response = await fetch('/api/payments/create', {
         method: 'POST',
         headers: {
@@ -111,7 +119,7 @@ export default function Home() {
         body: JSON.stringify({
           bookingId: docRef.id,
           customerEmail: formData.email,
-          totalPrice: totalPrice,
+          totalPrice: halfPrice, // Enviamos el 50% a cobrar
           cabinName: selectedCabin?.name,
         }),
       });
@@ -178,12 +186,15 @@ export default function Home() {
               <p className="text-2xl font-extrabold text-[#1E293B]">
                 CLP ${totalPrice.toLocaleString('es-CL')}
               </p>
+              <p className="text-[10px] text-[var(--forest-green)] font-extrabold mt-0.5">
+                (Abono 50% para confirmar: CLP ${halfPrice.toLocaleString('es-CL')})
+              </p>
             </div>
             <div className="w-full lg:w-auto">
               <ActionFooter 
                 onReserve={handleReserveClick} 
                 disabled={!selectedCabinId || selectedDates.length === 0 || isSubmitting}
-                price={totalPrice}
+                price={halfPrice}
               />
             </div>
           </div>
@@ -213,9 +224,25 @@ export default function Home() {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               </button>
               
-              <div className="mb-8">
+              <div className="mb-6">
                 <h3 className="text-2xl font-extrabold text-[#1E293B] mb-2">Tus datos</h3>
-                <p className="text-sm text-slate-500">Completa la información para finalizar la reserva de {selectedCabin?.name}.</p>
+                <p className="text-xs text-slate-500 mb-4">Completa la información para finalizar la reserva de {selectedCabin?.name}.</p>
+                
+                {/* Desglose de Pago Requerido al 50% */}
+                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-xs space-y-2">
+                  <div className="flex justify-between text-slate-500">
+                    <span>Valor Total de Estancia:</span>
+                    <span className="font-bold text-[#1E293B]">CLP ${totalPrice.toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex justify-between text-[var(--forest-green)] font-extrabold text-sm">
+                    <span>Abonar Ahora (50% Garantía):</span>
+                    <span>CLP ${halfPrice.toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-400 font-medium pt-1.5 border-t border-slate-200/50">
+                    <span>Saldo al llegar al Lodge:</span>
+                    <span>CLP ${halfPrice.toLocaleString('es-CL')}</span>
+                  </div>
+                </div>
               </div>
 
               <form onSubmit={submitBooking} className="space-y-5">
@@ -259,7 +286,7 @@ export default function Home() {
                     disabled={isSubmitting}
                     className="w-full btn-forest text-base py-4 flex justify-center items-center disabled:opacity-50"
                   >
-                    {isSubmitting ? 'Redirigiendo a Flow...' : `Proceder al Pago • $${totalPrice.toLocaleString('es-CL')}`}
+                    {isSubmitting ? 'Redirigiendo a Flow...' : `Pagar 50% Garantía • $${halfPrice.toLocaleString('es-CL')}`}
                   </button>
                 </div>
               </form>

@@ -131,9 +131,11 @@ export default function AdminCalendar({ bookings, cabins, selectedFilterDate, on
                   <div 
                     key={b.id} 
                     className={`text-[7px] lg:text-[8px] font-black uppercase tracking-tighter px-1 py-0.5 text-center rounded shadow-sm border truncate ${
-                      b.status === 'pagado' 
+                      (b.status === 'confirmed' || b.status === 'pagado') 
                         ? 'bg-[var(--forest-green)] text-white border-green-600' 
-                        : 'bg-orange-500 text-white border-orange-600'
+                        : b.status === 'rejected'
+                          ? 'bg-rose-500 text-white border-rose-600'
+                          : 'bg-amber-500 text-white border-amber-600'
                     }`}
                   >
                     {getCabinName(b.cabinId)}
@@ -145,14 +147,18 @@ export default function AdminCalendar({ bookings, cabins, selectedFilterDate, on
         })}
       </div>
       
-      <div className="mt-4 flex items-center justify-center gap-6 py-2 bg-slate-50 rounded-xl border border-slate-100">
+      <div className="mt-4 flex items-center justify-center gap-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded bg-[var(--forest-green)]"></div>
           <span className="text-[9px] font-black text-slate-600 uppercase">Pagado</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 rounded bg-orange-500"></div>
+          <div className="w-2.5 h-2.5 rounded bg-amber-500"></div>
           <span className="text-[9px] font-black text-slate-600 uppercase">Pendiente</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded bg-rose-500"></div>
+          <span className="text-[9px] font-black text-slate-600 uppercase">Fallido</span>
         </div>
       </div>
     </div>
