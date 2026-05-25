@@ -85,80 +85,37 @@ export default function Home() {
     try {
       const sortedDates = [...selectedDates].sort((a, b) => a.getTime() - b.getTime());
       
-      // Optimizamos la UI para que sea instantánea (sin await)
-      addDoc(collection(db, 'bookings'), {
-        cabinId: selectedCabinId,
-        startDate: sortedDates[0].toISOString(),
-        endDate: sortedDates[sortedDates.length - 1].toISOString(),
-        dates: sortedDates.map((d: Date) => d.toISOString()),
-        customerName: formData.name,
-        customerPhone: formData.phone,
-        customerEmail: formData.email,
-        totalPrice: totalPrice,
-        status: 'confirmed',
-        createdAt: new Date().toISOString(),
-      }).catch((error: any) => {
-        console.error("Error en background al sincronizar con Firebase:", error);
-      });
-      
-      setShowForm(false);
-      setSuccess(true);
-      
-      // Lanzar confeti
-      import('canvas-confetti').then((confetti) => {
-        confetti.default({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.6 },
-          colors: ['#2E7D32', '#4CAF50', '#81C784', '#1E293B', '#FFFFFF']
-        });
+      const response = await fetch('/api/payments/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cabinId: selectedCabinId,
+          cabinName: selectedCabin?.name,
+          dates: sortedDates.map((d: Date) => d.toISOString()),
+          customerName: formData.name,
+          customerPhone: formData.phone,
+          customerEmail: formData.email,
+          totalPrice: totalPrice,
+        }),
       });
 
-      // Generar Comprobante para descargar automáticamente
-      const receiptContent = `
-=========================================
-      RESERVA - LODGE PATAGONIA GO
-=========================================
-ID RESERVA: ${Math.random().toString(36).substring(2, 9).toUpperCase()}
-FECHA DE SOLICITUD: ${new Date().toLocaleDateString('es-CL')}
+      const data = await response.json();
 
-DETALLES DE LA ESTANCIA:
------------------------------------------
-CABAÑA: ${selectedCabin?.name}
-FECHAS: ${sortedDates.map(d => d.toLocaleDateString('es-CL')).join(', ')}
-TOTAL NOCHES: ${sortedDates.length}
-VALOR TOTAL: CLP $${totalPrice.toLocaleString('es-CL')}
+      if (!response.ok || data.error) {
+        throw new Error(data.error || 'No se pudo iniciar el proceso de pago');
+      }
 
-DATOS DEL HUÉSPED:
------------------------------------------
-NOMBRE: ${formData.name}
-TELÉFONO: ${formData.phone}
-EMAIL: ${formData.email}
-
-PRÓXIMOS PASOS:
------------------------------------------
-Para confirmar su estadía, realice la transferencia 
-en las próximas 2 horas y envíe el comprobante 
-a contacto@lodgepatagonia.cl
-
-¡Gracias por elegir Lodge Patagonia!
-=========================================
-`;
-      const blob = new Blob([receiptContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `Reserva_LodgePatagonia_${formData.name.replace(/\s+/g, '_')}.txt`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      setSelectedDates([]);
-      setFormData({ name: '', phone: '', email: '' });
-    } catch (error) {
-      console.error("Error al procesar reserva:", error);
-      alert("Hubo un problema. Por favor intenta de nuevo.");
+      // Redirigir al cliente al portal de pagos de Flow
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No se recibió la URL de pago de Flow');
+      }
+    } catch (error: any) {
+      console.error("Error al procesar reserva con Flow:", error);
+      alert(`Hubo un problema al conectar con la pasarela de pagos: ${error.message || 'Inténtalo de nuevo.'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -286,7 +243,7 @@ a contacto@lodgepatagonia.cl
                     disabled={isSubmitting}
                     className="w-full btn-forest text-base py-4 flex justify-center items-center disabled:opacity-50"
                   >
-                    {isSubmitting ? 'Procesando...' : `Confirmar Reserva • $${totalPrice.toLocaleString('es-CL')}`}
+                    {isSubmitting ? 'Redirigiendo a Flow...' : `Proceder al Pago • $${totalPrice.toLocaleString('es-CL')}`}
                   </button>
                 </div>
               </form>
