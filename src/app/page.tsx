@@ -132,6 +132,17 @@ export default function Home() {
 
       // 3. Redirigir al portal seguro de Flow
       if (data.url) {
+        // Meta Pixel InitiateCheckout tracking
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+          (window as any).fbq('track', 'InitiateCheckout', {
+            value: halfPrice,
+            currency: 'CLP',
+            content_name: selectedCabin?.name,
+            content_ids: [selectedCabinId],
+            content_type: 'product',
+          });
+        }
+
         console.log("[Client] Redirigiendo a Flow:", data.url);
         window.location.href = data.url;
       } else {

@@ -37,6 +37,17 @@ function SuccessContent() {
           setFlowInfo(data.flowStatus);
           setLoading(false);
           
+          // Meta Pixel Purchase tracking
+          if (typeof window !== 'undefined' && (window as any).fbq) {
+            (window as any).fbq('track', 'Purchase', {
+              value: data.booking.totalPrice || 0,
+              currency: 'CLP',
+              content_name: `Cabaña ${data.booking.cabinId || 'General'}`,
+              content_type: 'product',
+              content_ids: [data.booking.cabinId || 'cabin'],
+            });
+          }
+
           // Lanzar confeti premium
           import('canvas-confetti').then((confetti) => {
             confetti.default({
