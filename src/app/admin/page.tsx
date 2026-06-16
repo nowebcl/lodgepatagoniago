@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, query, orderBy, doc, updateDoc, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, updateDoc, getDocs, setDoc, deleteDoc, addDoc } from 'firebase/firestore';
 import { ChevronLeft, Calendar as CalendarIcon, Users, Power, Clock, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -204,6 +204,7 @@ export default function AdminDashboard() {
 
   return (
     <AdminDashboardContent 
+      db={db}
       bookings={bookings} 
       cabins={cabins} 
       deleteBooking={deleteBooking} 
@@ -213,9 +214,87 @@ export default function AdminDashboard() {
   );
 }
 
-function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, toggleCabinAvailability }: any) {
+function AdminDashboardContent({ db, bookings, cabins, deleteBooking, markAsPaid, toggleCabinAvailability }: any) {
   const [selectedFilterDate, setSelectedFilterDate] = useState<Date | null>(null);
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
+
+  // Form states for manual blocking
+  const [blockCabinId, setBlockCabinId] = useState('c8');
+  const [blockReason, setBlockReason] = useState('');
+  const [blockStart, setBlockStart] = useState('');
+  const [blockEnd, setBlockEnd] = useState('');
+  const [blockPrice, setBlockPrice] = useState('');
+  const [blockEmail, setBlockEmail] = useState('');
+  const [blockPhone, setBlockPhone] = useState('');
+
+  // Auto-fill dates when selectedFilterDate changes
+  useEffect(() => {
+    if (selectedFilterDate) {
+      const dateStr = format(selectedFilterDate, 'yyyy-MM-dd');
+      setBlockStart(dateStr);
+      setBlockEnd(dateStr);
+    }
+  }, [selectedFilterDate]);
+
+  const handleCreateBlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!db) return;
+
+    if (!blockStart || !blockEnd || !blockCabinId || !blockReason) {
+      alert("Por favor completa los campos obligatorios: Cabaña, Razón, Entrada y Salida.");
+      return;
+    }
+
+    const [startYear, startMonth, startDay] = blockStart.split('-').map(Number);
+    const [endYear, endMonth, endDay] = blockEnd.split('-').map(Number);
+    
+    const start = new Date(startYear, startMonth - 1, startDay, 0, 0, 0, 0);
+    const end = new Date(endYear, endMonth - 1, endDay, 0, 0, 0, 0);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      alert("Fechas inválidas.");
+      return;
+    }
+
+    if (end < start) {
+      alert("La fecha de salida no puede ser anterior a la de entrada.");
+      return;
+    }
+
+    // Generate dates array (inclusive)
+    const datesArr: string[] = [];
+    let current = new Date(start);
+    while (current <= end) {
+      datesArr.push(current.toISOString());
+      current.setDate(current.getDate() + 1);
+    }
+
+    try {
+      const price = blockPrice ? parseInt(blockPrice) : 0;
+      await addDoc(collection(db, 'bookings'), {
+        cabinId: blockCabinId,
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
+        dates: datesArr,
+        customerName: blockReason,
+        customerPhone: blockPhone || '-',
+        customerEmail: blockEmail || 'admin@lodgepatagonia.cl',
+        totalPrice: price,
+        paidAmount: Math.round(price / 2),
+        status: 'confirmed', // 'confirmed' locks dates in customer view
+        createdAt: new Date().toISOString(),
+      });
+
+      alert("Bloqueo / Reserva manual creada con éxito.");
+      setBlockReason('');
+      setBlockPrice('');
+      setBlockEmail('');
+      setBlockPhone('');
+    } catch (err: any) {
+      console.error("Error creating manual block:", err);
+      alert("Error al crear el bloqueo: " + err.message);
+    }
+  };
 
   // Reset selected booking when day changes
   useEffect(() => {
@@ -412,20 +491,36 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                               </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2 bg-white p-3 rounded-lg border border-slate-100">
-                              <div>
-                                <p className="text-[8px] font-black text-slate-300 uppercase">Cabaña</p>
-                                <p className="text-[10px] font-black text-slate-700">{CABINS_INITIAL.find((c: any) => c.id === selectedBooking.cabinId)?.name.replace('Cabaña ', '')}</p>
+                            {selectedBooking.totalPrice > 0 ? (
+                              <div className="grid grid-cols-2 gap-2 bg-white p-3 rounded-lg border border-slate-100">
+                                <div>
+                                  <p className="text-[8px] font-black text-slate-300 uppercase">Cabaña</p>
+                                  <p className="text-[10px] font-black text-slate-700">{CABINS_INITIAL.find((c: any) => c.id === selectedBooking.cabinId)?.name.replace('Cabaña ', '')}</p>
+                                </div>
+                                <div>
+                                  <p className="text-[8px] font-black text-slate-300 uppercase">Total Reserva</p>
+                                  <p className="text-[10px] font-black text-slate-700">${selectedBooking.totalPrice?.toLocaleString('es-CL')}</p>
+                                </div>
+                                <div className="col-span-2 pt-2 mt-1 border-t border-slate-100 flex justify-between text-[9px] font-black uppercase text-slate-400">
+                                  <span>Abono (50%): <span className="text-[var(--forest-green)]">${(selectedBooking.paidAmount || Math.round((selectedBooking.totalPrice || 0) / 2))?.toLocaleString('es-CL')}</span></span>
+                                  <span>Por Pagar: <span className="text-slate-700">${(selectedBooking.paidAmount || Math.round((selectedBooking.totalPrice || 0) / 2))?.toLocaleString('es-CL')}</span></span>
+                                </div>
                               </div>
-                              <div>
-                                <p className="text-[8px] font-black text-slate-300 uppercase">Total Reserva</p>
-                                <p className="text-[10px] font-black text-slate-700">${selectedBooking.totalPrice?.toLocaleString('es-CL')}</p>
+                            ) : (
+                              <div className="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-center">
+                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-wider">Bloqueo Manual de Cabaña</p>
+                                <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-200/60 text-left">
+                                  <div>
+                                    <p className="text-[7px] font-black text-slate-400 uppercase">Cabaña</p>
+                                    <p className="text-[9px] font-bold text-slate-700">{CABINS_INITIAL.find((c: any) => c.id === selectedBooking.cabinId)?.name.replace('Cabaña ', '')}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[7px] font-black text-slate-400 uppercase">Razón</p>
+                                    <p className="text-[9px] font-bold text-slate-700">{selectedBooking.customerName || 'Bloqueo Manual'}</p>
+                                  </div>
+                                </div>
                               </div>
-                              <div className="col-span-2 pt-2 mt-1 border-t border-slate-100 flex justify-between text-[9px] font-black uppercase text-slate-400">
-                                <span>Abono (50%): <span className="text-[var(--forest-green)]">${(selectedBooking.paidAmount || Math.round((selectedBooking.totalPrice || 0) / 2))?.toLocaleString('es-CL')}</span></span>
-                                <span>Por Pagar: <span className="text-slate-700">${(selectedBooking.paidAmount || Math.round((selectedBooking.totalPrice || 0) / 2))?.toLocaleString('es-CL')}</span></span>
-                              </div>
-                            </div>
+                            )}
 
                             <div className="flex gap-2">
                               {selectedBooking.status !== 'confirmed' && selectedBooking.status !== 'pagado' && (
@@ -454,6 +549,107 @@ function AdminDashboardContent({ bookings, cabins, deleteBooking, markAsPaid, to
                   )}
                 </div>
               )}
+            </section>
+
+            <section className="bg-white rounded-[1.5rem] p-6 shadow-md border border-slate-100">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
+                <Lock size={14} className="text-slate-400" />
+                <h3 className="text-xs font-black tracking-tight uppercase text-slate-800">
+                  Bloquear Cabaña (Manual / OTR)
+                </h3>
+              </div>
+              
+              <form onSubmit={handleCreateBlock} className="space-y-3.5">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[8px] font-black text-slate-400 uppercase mb-1">Cabaña *</label>
+                    <select 
+                      value={blockCabinId}
+                      onChange={(e) => setBlockCabinId(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-slate-700 outline-none focus:border-[var(--forest-green)]"
+                    >
+                      {CABINS_INITIAL.map((c) => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[8px] font-black text-slate-400 uppercase mb-1">Razón / Origen *</label>
+                    <input 
+                      type="text"
+                      placeholder="Ej. Airbnb / Booking.com"
+                      value={blockReason}
+                      onChange={(e) => setBlockReason(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-slate-700 outline-none focus:border-[var(--forest-green)] placeholder-slate-300"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[8px] font-black text-slate-400 uppercase mb-1">Entrada *</label>
+                    <input 
+                      type="date"
+                      value={blockStart}
+                      onChange={(e) => setBlockStart(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-slate-700 outline-none focus:border-[var(--forest-green)]"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[8px] font-black text-slate-400 uppercase mb-1">Salida *</label>
+                    <input 
+                      type="date"
+                      value={blockEnd}
+                      onChange={(e) => setBlockEnd(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-slate-700 outline-none focus:border-[var(--forest-green)]"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="col-span-1">
+                    <label className="block text-[8px] font-black text-slate-400 uppercase mb-1">Precio (Opcional)</label>
+                    <input 
+                      type="number"
+                      placeholder="0"
+                      value={blockPrice}
+                      onChange={(e) => setBlockPrice(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-slate-700 outline-none focus:border-[var(--forest-green)] placeholder-slate-300"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-[8px] font-black text-slate-400 uppercase mb-1">Email (Opcional)</label>
+                    <input 
+                      type="email"
+                      placeholder="correo@ejemplo.com"
+                      value={blockEmail}
+                      onChange={(e) => setBlockEmail(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-slate-700 outline-none focus:border-[var(--forest-green)] placeholder-slate-300"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[8px] font-black text-slate-400 uppercase mb-1">Teléfono (Opcional)</label>
+                  <input 
+                    type="text"
+                    placeholder="+56 9..."
+                    value={blockPhone}
+                    onChange={(e) => setBlockPhone(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-slate-700 outline-none focus:border-[var(--forest-green)] placeholder-slate-300"
+                  />
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full bg-slate-900 text-white font-black py-2.5 rounded-lg hover:bg-slate-800 transition-all text-[9px] uppercase tracking-wider mt-2 active:scale-95"
+                >
+                  🔒 Crear Bloqueo / Reserva Manual
+                </button>
+              </form>
             </section>
 
             <section className="bg-slate-900 rounded-[1.5rem] p-5 text-white shadow-xl">
