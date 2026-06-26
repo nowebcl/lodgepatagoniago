@@ -26,9 +26,9 @@ const CABINS = [
 const PROMOTIONS = [
   {
     id: 'temporada_baja',
-    name: '🔥 OFERTA TEMPORADA BAJA',
-    tagline: '🏡 Escápate entre semana (-25%) Lun/Jue',
-    description: '1 noche • Vista al mar (Aplica para estadías de 1 noche de Lunes a Jueves)',
+    name: 'Oferta Temporada Baja',
+    tagline: 'Escápate entre semana (Lun/Jue -25%)',
+    description: 'Válido para estadías de 1 noche de Lunes a Jueves. Incluye vista al mar.',
     cabinPrices: {
       c2: { original: 70000, promo: 53000 },
       c5: { original: 80000, promo: 60000 },
@@ -44,9 +44,9 @@ const PROMOTIONS = [
   },
   {
     id: 'dos_noches',
-    name: '🌊 2 NOCHES FRENTE AL MAR',
-    tagline: '👥 Tarifa especial para 2 noches de estadía',
-    description: 'Disfruta de 2 noches frente al mar con descuento especial',
+    name: '2 Noches Frente al Mar',
+    tagline: 'Tarifa especial para estadías de 2 noches',
+    description: 'Disfruta de una tarifa rebajada para estadías de exactamente 2 noches.',
     cabinPrices: {
       c2: { original: 155000, promo: 130000 },
       c5: { original: 165000, promo: 140000 },
@@ -60,9 +60,9 @@ const PROMOTIONS = [
   },
   {
     id: 'tinaja_privada',
-    name: '🔥 PROMO TINAJA PRIVADA',
-    tagline: '♨️ 1 Noche + Tinaja caliente privada',
-    description: 'Disfruta de la máxima relajación con tinaja privada incluida',
+    name: 'Promo Tinaja Privada',
+    tagline: '1 Noche + Tinaja de agua caliente privada',
+    description: 'Estadía de 1 noche con servicio de tinaja privada incluido.',
     cabinPrices: {
       c2: { original: 120000, promo: 110000 },
       c5: { original: 130000, promo: 120000 },
@@ -278,76 +278,85 @@ export default function Home() {
 
             {/* Promociones Especiales */}
             <div className="mt-8 mb-4 text-center lg:text-left">
-              <h2 className="section-title-ref">Promociones Especiales 🔥</h2>
+              <h2 className="section-title-ref">Tarifas Especiales</h2>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
-                Ahorra con nuestros paquetes exclusivos
+                Selecciona una promoción para tu estadía
               </p>
             </div>
             
-            <div className="grid grid-cols-1 gap-3 px-5 lg:px-0">
+            <div className="space-y-2.5 px-5 lg:px-0">
               {PROMOTIONS.map((promo) => {
                 const isSelected = selectedPromoId === promo.id;
                 const prices = selectedCabinId ? (promo.cabinPrices as any)[selectedCabinId] : null;
                 const isValid = promo.isValid(selectedDates);
 
                 return (
-                  <button
+                  <div
                     key={promo.id}
-                    type="button"
-                    onClick={() => setSelectedPromoId(isSelected ? null : promo.id)}
                     className={cn(
-                      "w-full text-left p-4 rounded-2xl border transition-all relative flex flex-col gap-2 bg-white",
+                      "border rounded-xl transition-all overflow-hidden bg-white",
                       isSelected 
-                        ? "border-[var(--forest-green)] bg-green-50/20 ring-1 ring-[var(--forest-green)]/30 shadow-md shadow-green-900/5" 
-                        : "border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md"
+                        ? "border-[var(--forest-green)] ring-1 ring-[var(--forest-green)]/10 shadow-sm" 
+                        : "border-slate-100 hover:border-slate-200"
                     )}
                   >
-                    {/* Tag/Header */}
-                    <div className="flex justify-between items-start w-full">
-                      <div className="flex-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{promo.tagline}</span>
-                        <h4 className="text-sm font-extrabold text-[#1E293B] tracking-tight mt-0.5">{promo.name}</h4>
-                      </div>
-                      {isSelected && (
-                        <span className="bg-[var(--forest-green)] text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shrink-0">
-                          Seleccionado
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-[11px] text-slate-500 font-medium">
-                      {promo.description}
-                    </p>
-
-                    {/* Price Preview if Cabin is Selected */}
-                    {selectedCabinId && prices && (
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] text-slate-400 line-through font-bold">
-                          CLP ${prices.original.toLocaleString('es-CL')}
-                        </span>
-                        <span className="text-xs font-black text-rose-500">
-                          CLP ${prices.promo.toLocaleString('es-CL')}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Validation Message */}
-                    {isSelected && (
-                      <div className="mt-1.5 pt-2 border-t border-slate-200/60 w-full flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPromoId(isSelected ? null : promo.id)}
+                      className="w-full text-left p-3.5 flex items-center justify-between gap-4"
+                    >
+                      {/* Left: Radio and Title */}
+                      <div className="flex items-center gap-3 min-w-0">
                         <div className={cn(
-                          "w-1.5 h-1.5 rounded-full",
-                          isValid ? "bg-emerald-500 animate-pulse" : "bg-amber-400"
-                        )} />
-                        <span className={cn(
-                          "text-[9px] font-bold uppercase tracking-wider",
-                          isValid ? "text-emerald-600" : "text-amber-600"
+                          "w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all",
+                          isSelected 
+                            ? "border-[var(--forest-green)] bg-[var(--forest-green)]" 
+                            : "border-slate-300 bg-white"
                         )}>
-                          {isValid ? "¡Promo Activada y Aplicada!" : promo.requirementText}
-                        </span>
+                          {isSelected && (
+                            <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-xs font-bold text-slate-800 tracking-tight truncate">{promo.name}</h4>
+                          <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider truncate mt-0.5">{promo.tagline}</p>
+                        </div>
+                      </div>
+
+                      {/* Right: Price Preview */}
+                      {selectedCabinId && prices && (
+                        <div className="text-right shrink-0">
+                          <div className="text-[9px] text-slate-400 line-through font-semibold">
+                            CLP ${prices.original.toLocaleString('es-CL')}
+                          </div>
+                          <div className="text-xs font-black text-slate-800">
+                            CLP ${prices.promo.toLocaleString('es-CL')}
+                          </div>
+                        </div>
+                      )}
+                    </button>
+
+                    {/* Expandable details */}
+                    {isSelected && (
+                      <div className="px-3.5 pb-3.5 pt-1.5 border-t border-slate-50 flex flex-col gap-1 bg-slate-50/30">
+                        <p className="text-[10px] text-slate-500 leading-normal font-medium">
+                          {promo.description}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-1.5">
+                          <div className={cn(
+                            "w-1.5 h-1.5 rounded-full",
+                            isValid ? "bg-emerald-500 animate-pulse" : "bg-amber-400"
+                          )} />
+                          <span className={cn(
+                            "text-[8px] font-black uppercase tracking-wider",
+                            isValid ? "text-emerald-600" : "text-amber-600"
+                          )}>
+                            {isValid ? "Promoción activada y aplicada" : promo.requirementText}
+                          </span>
+                        </div>
                       </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>
