@@ -25,6 +25,19 @@ body {
   background-color: white;
   max-width: 1000px; /* Slightly narrower for more focus */
   margin: 0 auto;
+  transition: max-width 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .app-container {
+    max-width: 1200px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .app-container {
+    max-width: 1320px;
+  }
 }
 
 .scroll-area {

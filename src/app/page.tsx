@@ -250,9 +250,9 @@ export default function Home() {
       <Header />
       
       <main className="app-container flex-1 overflow-y-auto overflow-x-hidden lg:overflow-hidden">
-        <div className="min-h-full flex flex-col lg:flex-row gap-4 lg:gap-12 px-0 lg:px-10 pb-32 pt-0 w-full max-w-[100vw] justify-center">
+        <div className="min-h-full flex flex-col lg:flex-row gap-4 lg:gap-6 xl:gap-8 px-0 lg:px-5 xl:px-8 pb-32 pt-0 w-full max-w-[100vw] justify-center">
           {/* Lado Izquierdo: Calendario */}
-          <section className="w-full lg:w-[350px] flex-shrink-0 px-5 lg:px-0">
+          <section className="w-full lg:w-[320px] xl:w-[340px] flex-shrink-0 px-5 lg:px-0">
             <h2 className="section-title-ref mb-3 hidden lg:block text-center lg:text-left">Selecciona fecha</h2>
             <div className="bg-white">
               <Calendar 
@@ -263,8 +263,8 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Lado Derecho: Selector de Cabañas */}
-          <section className="flex-1 w-full max-w-lg min-w-0 lg:overflow-y-auto lg:pr-2 custom-scrollbar px-5 lg:px-0">
+          {/* Centro: Selector de Cabañas */}
+          <section className="w-full lg:flex-1 lg:max-w-[400px] xl:max-w-[440px] min-w-0 lg:overflow-y-auto lg:pr-2 custom-scrollbar px-5 lg:px-0">
             <div className="text-center lg:text-left mb-3 lg:mb-8">
               <h2 className="section-title-ref !mb-1">Selecciona cabaña</h2>
               <p className="text-[10px] text-orange-500 font-black uppercase tracking-widest mt-1">
@@ -275,9 +275,11 @@ export default function Home() {
               selectedCabinId={selectedCabinId} 
               onSelect={setSelectedCabinId} 
             />
+          </section>
 
-            {/* Promociones Especiales */}
-            <div className="mt-8 mb-4 text-center lg:text-left">
+          {/* Derecho: Promociones Especiales */}
+          <section className="w-full lg:flex-1 lg:max-w-[400px] xl:max-w-[440px] min-w-0 lg:overflow-y-auto lg:pr-2 custom-scrollbar px-5 lg:px-0">
+            <div className="text-center lg:text-left mb-3 lg:mb-8">
               <h2 className="section-title-ref !mb-1">Tarifas Especiales</h2>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
                 Selecciona una promoción para tu estadía
@@ -394,7 +396,7 @@ export default function Home() {
 
         {/* Footer */}
         <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-slate-100 p-5 pt-4 pb-16 lg:p-8">
-          <div className="max-w-[1000px] mx-auto flex items-center justify-between lg:justify-center lg:gap-10">
+          <div className="max-w-[1200px] xl:max-w-[1300px] mx-auto flex items-center justify-between lg:justify-center lg:gap-10">
             <div className="hidden lg:block text-right">
               <p className="text-xs text-slate-400 font-medium mb-1">Total Reserva ({numberOfDays} noche{numberOfDays !== 1 && 's'}):</p>
               <p className="text-2xl font-extrabold text-[#1E293B]">
