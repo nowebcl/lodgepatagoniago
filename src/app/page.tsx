@@ -9,6 +9,12 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { startOfToday, eachDayOfInterval, differenceInDays } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 const CABINS = [
   { id: 'c8', name: 'Cabaña Superior (8)', price: 100000 },
@@ -17,10 +23,65 @@ const CABINS = [
   { id: 'c2', name: 'Cabaña Refugio (2)', price: 70000 },
 ];
 
+const PROMOTIONS = [
+  {
+    id: 'temporada_baja',
+    name: '🔥 OFERTA TEMPORADA BAJA',
+    tagline: '🏡 Escápate entre semana (-25%) Lun/Jue',
+    description: '1 noche • Vista al mar (Aplica para estadías de 1 noche de Lunes a Jueves)',
+    cabinPrices: {
+      c2: { original: 70000, promo: 53000 },
+      c5: { original: 80000, promo: 60000 },
+      c8: { original: 100000, promo: 75000 },
+      c4: { original: 75000, promo: 56000 },
+    },
+    isValid: (dates: Date[]) => {
+      if (dates.length !== 1) return false;
+      const day = dates[0].getDay();
+      return day >= 1 && day <= 4; // Lunes a Jueves
+    },
+    requirementText: 'Selecciona 1 noche de Lunes a Jueves.'
+  },
+  {
+    id: 'dos_noches',
+    name: '🌊 2 NOCHES FRENTE AL MAR',
+    tagline: '👥 Tarifa especial para 2 noches de estadía',
+    description: 'Disfruta de 2 noches frente al mar con descuento especial',
+    cabinPrices: {
+      c2: { original: 155000, promo: 130000 },
+      c5: { original: 165000, promo: 140000 },
+      c8: { original: 183000, promo: 160000 },
+      c4: { original: 170000, promo: 150000 },
+    },
+    isValid: (dates: Date[]) => {
+      return dates.length === 2;
+    },
+    requirementText: 'Selecciona exactamente 2 noches.'
+  },
+  {
+    id: 'tinaja_privada',
+    name: '🔥 PROMO TINAJA PRIVADA',
+    tagline: '♨️ 1 Noche + Tinaja caliente privada',
+    description: 'Disfruta de la máxima relajación con tinaja privada incluida',
+    cabinPrices: {
+      c2: { original: 120000, promo: 110000 },
+      c5: { original: 130000, promo: 120000 },
+      c8: { original: 150000, promo: 135000 },
+      c4: { original: 140000, promo: 128000 },
+    },
+    isValid: (dates: Date[]) => {
+      return dates.length === 1;
+    },
+    requirementText: 'Selecciona exactamente 1 noche.'
+  }
+];
+
+
 export default function Home() {
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [selectedCabinId, setSelectedCabinId] = useState<string | null>(null);
   const [blockedDates, setBlockedDates] = useState<Date[]>([]);
+  const [selectedPromoId, setSelectedPromoId] = useState<string | null>(null);
   
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', phone: '', email: '' });
@@ -33,7 +94,34 @@ export default function Home() {
   [selectedCabinId]);
 
   const numberOfDays = selectedDates.length;
-  const totalPrice = selectedCabin ? selectedCabin.price * numberOfDays : 0;
+
+  const activePromo = useMemo(() => 
+    PROMOTIONS.find((p) => p.id === selectedPromoId),
+  [selectedPromoId]);
+
+  const isPromoApplied = useMemo(() => {
+    if (!activePromo || !selectedCabinId) return false;
+    return activePromo.isValid(selectedDates);
+  }, [activePromo, selectedCabinId, selectedDates]);
+
+  const totalPrice = useMemo(() => {
+    if (!selectedCabin) return 0;
+    if (isPromoApplied && activePromo && selectedCabinId) {
+      const prices = (activePromo.cabinPrices as any)[selectedCabinId];
+      return prices ? prices.promo : selectedCabin.price * numberOfDays;
+    }
+    return selectedCabin.price * numberOfDays;
+  }, [selectedCabin, isPromoApplied, activePromo, selectedCabinId, numberOfDays]);
+
+  const originalPrice = useMemo(() => {
+    if (!selectedCabin) return 0;
+    if (isPromoApplied && activePromo && selectedCabinId) {
+      const prices = (activePromo.cabinPrices as any)[selectedCabinId];
+      return prices ? prices.original : selectedCabin.price * numberOfDays;
+    }
+    return selectedCabin.price * numberOfDays;
+  }, [selectedCabin, isPromoApplied, activePromo, selectedCabinId, numberOfDays]);
+
   const halfPrice = Math.round(totalPrice / 2);
 
   // Fetch blocked dates when a cabin is selected
@@ -106,6 +194,7 @@ export default function Home() {
         paidAmount: halfPrice, // 50% a pagar
         status: 'pending_payment',
         createdAt: new Date().toISOString(),
+        appliedPromo: isPromoApplied && activePromo ? activePromo.name : null,
       });
       console.log("[Client] Reserva creada con éxito. ID:", docRef.id);
 
@@ -186,6 +275,82 @@ export default function Home() {
               selectedCabinId={selectedCabinId} 
               onSelect={setSelectedCabinId} 
             />
+
+            {/* Promociones Especiales */}
+            <div className="mt-8 mb-4 text-center lg:text-left">
+              <h2 className="section-title-ref">Promociones Especiales 🔥</h2>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                Ahorra con nuestros paquetes exclusivos
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-3 px-5 lg:px-0">
+              {PROMOTIONS.map((promo) => {
+                const isSelected = selectedPromoId === promo.id;
+                const prices = selectedCabinId ? (promo.cabinPrices as any)[selectedCabinId] : null;
+                const isValid = promo.isValid(selectedDates);
+
+                return (
+                  <button
+                    key={promo.id}
+                    type="button"
+                    onClick={() => setSelectedPromoId(isSelected ? null : promo.id)}
+                    className={cn(
+                      "w-full text-left p-4 rounded-2xl border transition-all relative flex flex-col gap-2 bg-white",
+                      isSelected 
+                        ? "border-[var(--forest-green)] bg-green-50/20 ring-1 ring-[var(--forest-green)]/30 shadow-md shadow-green-900/5" 
+                        : "border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md"
+                    )}
+                  >
+                    {/* Tag/Header */}
+                    <div className="flex justify-between items-start w-full">
+                      <div className="flex-1">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{promo.tagline}</span>
+                        <h4 className="text-sm font-extrabold text-[#1E293B] tracking-tight mt-0.5">{promo.name}</h4>
+                      </div>
+                      {isSelected && (
+                        <span className="bg-[var(--forest-green)] text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shrink-0">
+                          Seleccionado
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      {promo.description}
+                    </p>
+
+                    {/* Price Preview if Cabin is Selected */}
+                    {selectedCabinId && prices && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-slate-400 line-through font-bold">
+                          CLP ${prices.original.toLocaleString('es-CL')}
+                        </span>
+                        <span className="text-xs font-black text-rose-500">
+                          CLP ${prices.promo.toLocaleString('es-CL')}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Validation Message */}
+                    {isSelected && (
+                      <div className="mt-1.5 pt-2 border-t border-slate-200/60 w-full flex items-center gap-2">
+                        <div className={cn(
+                          "w-1.5 h-1.5 rounded-full",
+                          isValid ? "bg-emerald-500 animate-pulse" : "bg-amber-400"
+                        )} />
+                        <span className={cn(
+                          "text-[9px] font-bold uppercase tracking-wider",
+                          isValid ? "text-emerald-600" : "text-amber-600"
+                        )}>
+                          {isValid ? "¡Promo Activada y Aplicada!" : promo.requirementText}
+                        </span>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </section>
         </div>
 
@@ -195,6 +360,11 @@ export default function Home() {
             <div className="hidden lg:block text-right">
               <p className="text-xs text-slate-400 font-medium mb-1">Total Reserva ({numberOfDays} noche{numberOfDays !== 1 && 's'}):</p>
               <p className="text-2xl font-extrabold text-[#1E293B]">
+                {isPromoApplied && originalPrice > totalPrice && (
+                  <span className="text-sm text-slate-400 line-through mr-2 font-bold">
+                    CLP ${originalPrice.toLocaleString('es-CL')}
+                  </span>
+                )}
                 CLP ${totalPrice.toLocaleString('es-CL')}
               </p>
               <p className="text-[10px] text-[var(--forest-green)] font-extrabold mt-0.5">
@@ -239,12 +409,24 @@ export default function Home() {
                 <h3 className="text-2xl font-extrabold text-[#1E293B] mb-2">Tus datos</h3>
                 <p className="text-xs text-slate-500 mb-4">Completa la información para finalizar la reserva de {selectedCabin?.name}.</p>
                 
-                {/* Desglose de Pago Requerido al 50% */}
                 <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-xs space-y-2">
                   <div className="flex justify-between text-slate-500">
                     <span>Valor Total de Estancia:</span>
-                    <span className="font-bold text-[#1E293B]">CLP ${totalPrice.toLocaleString('es-CL')}</span>
+                    <span className="font-bold text-[#1E293B]">
+                      {isPromoApplied && originalPrice > totalPrice && (
+                        <span className="text-xs text-slate-400 line-through mr-2 font-bold">
+                          CLP ${originalPrice.toLocaleString('es-CL')}
+                        </span>
+                      )}
+                      CLP ${totalPrice.toLocaleString('es-CL')}
+                    </span>
                   </div>
+                  {isPromoApplied && activePromo && (
+                    <div className="flex justify-between text-rose-500 font-bold">
+                      <span>Promoción Aplicada:</span>
+                      <span>{activePromo.name}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-[var(--forest-green)] font-extrabold text-sm">
                     <span>Abonar Ahora (50% Garantía):</span>
                     <span>CLP ${halfPrice.toLocaleString('es-CL')}</span>

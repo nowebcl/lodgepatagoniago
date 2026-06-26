@@ -501,6 +501,12 @@ function AdminDashboardContent({ db, bookings, cabins, deleteBooking, markAsPaid
                                   <p className="text-[8px] font-black text-slate-300 uppercase">Total Reserva</p>
                                   <p className="text-[10px] font-black text-slate-700">${selectedBooking.totalPrice?.toLocaleString('es-CL')}</p>
                                 </div>
+                                {selectedBooking.appliedPromo && (
+                                  <div className="col-span-2 mt-1 pt-1.5 border-t border-slate-100">
+                                    <p className="text-[8px] font-black text-rose-500 uppercase">Promoción Aplicada</p>
+                                    <p className="text-[10px] font-extrabold text-rose-600">{selectedBooking.appliedPromo}</p>
+                                  </div>
+                                )}
                                 <div className="col-span-2 pt-2 mt-1 border-t border-slate-100 flex justify-between text-[9px] font-black uppercase text-slate-400">
                                   <span>Abono (50%): <span className="text-[var(--forest-green)]">${(selectedBooking.paidAmount || Math.round((selectedBooking.totalPrice || 0) / 2))?.toLocaleString('es-CL')}</span></span>
                                   <span>Por Pagar: <span className="text-slate-700">${(selectedBooking.paidAmount || Math.round((selectedBooking.totalPrice || 0) / 2))?.toLocaleString('es-CL')}</span></span>
