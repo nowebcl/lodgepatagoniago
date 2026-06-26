@@ -264,9 +264,9 @@ export default function Home() {
           </section>
 
           {/* Lado Derecho: Selector de Cabañas */}
-          <section className="flex-1 w-full max-w-lg min-w-0 lg:overflow-y-auto lg:pr-2 custom-scrollbar pl-5 lg:pl-0">
+          <section className="flex-1 w-full max-w-lg min-w-0 lg:overflow-y-auto lg:pr-2 custom-scrollbar px-5 lg:px-0">
             <div className="text-center lg:text-left mb-3 lg:mb-8">
-              <h2 className="section-title-ref">Selecciona cabaña</h2>
+              <h2 className="section-title-ref !mb-1">Selecciona cabaña</h2>
               <p className="text-[10px] text-orange-500 font-black uppercase tracking-widest mt-1">
                 * Primero debes seleccionar tu cabaña
               </p>
@@ -278,13 +278,13 @@ export default function Home() {
 
             {/* Promociones Especiales */}
             <div className="mt-8 mb-4 text-center lg:text-left">
-              <h2 className="section-title-ref">Tarifas Especiales</h2>
+              <h2 className="section-title-ref !mb-1">Tarifas Especiales</h2>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
                 Selecciona una promoción para tu estadía
               </p>
             </div>
             
-            <div className="space-y-2.5 px-5 lg:px-0">
+            <div className="space-y-3">
               {PROMOTIONS.map((promo) => {
                 const isSelected = selectedPromoId === promo.id;
                 const prices = selectedCabinId ? (promo.cabinPrices as any)[selectedCabinId] : null;
@@ -294,65 +294,94 @@ export default function Home() {
                   <div
                     key={promo.id}
                     className={cn(
-                      "border rounded-xl transition-all overflow-hidden bg-white",
+                      "border rounded-[20px] transition-all duration-300 overflow-hidden bg-white",
                       isSelected 
-                        ? "border-[var(--forest-green)] ring-1 ring-[var(--forest-green)]/10 shadow-sm" 
-                        : "border-slate-100 hover:border-slate-200"
+                        ? "border-[var(--forest-green)] border-2 shadow-sm" 
+                        : "border-slate-100 hover:border-slate-200 hover:shadow-md hover:-translate-y-0.5"
                     )}
                   >
                     <button
                       type="button"
                       onClick={() => setSelectedPromoId(isSelected ? null : promo.id)}
-                      className="w-full text-left p-3.5 flex items-center justify-between gap-4"
+                      className="w-full text-left p-5 flex items-center justify-between gap-4"
                     >
                       {/* Left: Radio and Title */}
-                      <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex items-center gap-4 min-w-0">
                         <div className={cn(
-                          "w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all",
+                          "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300",
                           isSelected 
-                            ? "border-[var(--forest-green)] bg-[var(--forest-green)]" 
+                            ? "border-[var(--forest-green)] bg-white" 
                             : "border-slate-300 bg-white"
                         )}>
-                          {isSelected && (
-                            <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                          )}
+                          <div className={cn(
+                            "w-2.5 h-2.5 rounded-full bg-[var(--forest-green)] transition-all duration-300 transform scale-0",
+                            isSelected && "scale-100"
+                          )} />
                         </div>
                         <div className="min-w-0">
-                          <h4 className="text-xs font-bold text-slate-800 tracking-tight truncate">{promo.name}</h4>
-                          <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider truncate mt-0.5">{promo.tagline}</p>
+                          <h4 className="text-[14px] font-extrabold text-[#1E293B] tracking-tight truncate">
+                            {promo.name}
+                          </h4>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate mt-0.5">
+                            {promo.tagline}
+                          </p>
                         </div>
                       </div>
 
                       {/* Right: Price Preview */}
-                      {selectedCabinId && prices && (
+                      {selectedCabinId && prices ? (
                         <div className="text-right shrink-0">
-                          <div className="text-[9px] text-slate-400 line-through font-semibold">
+                          <div className="text-[10px] text-slate-400 line-through font-bold">
                             CLP ${prices.original.toLocaleString('es-CL')}
                           </div>
-                          <div className="text-xs font-black text-slate-800">
+                          <div className="text-[14px] font-black text-[var(--forest-green)]">
                             CLP ${prices.promo.toLocaleString('es-CL')}
                           </div>
                         </div>
+                      ) : (
+                        (() => {
+                          const cabinPriceList = Object.values(promo.cabinPrices);
+                          const minPromo = Math.min(...cabinPriceList.map((p: any) => p.promo));
+                          const minOriginal = Math.min(...cabinPriceList.map((p: any) => p.original));
+                          return (
+                            <div className="text-right shrink-0">
+                              <span className="text-[8px] text-slate-400 font-extrabold uppercase tracking-widest block text-right mb-0.5">
+                                Desde
+                              </span>
+                              <div className="text-[10px] text-slate-300 line-through font-bold">
+                                CLP ${minOriginal.toLocaleString('es-CL')}
+                              </div>
+                              <div className="text-[14px] font-extrabold text-[#1E293B]">
+                                CLP ${minPromo.toLocaleString('es-CL')}
+                              </div>
+                            </div>
+                          );
+                        })()
                       )}
                     </button>
 
                     {/* Expandable details */}
                     {isSelected && (
-                      <div className="px-3.5 pb-3.5 pt-1.5 border-t border-slate-50 flex flex-col gap-1 bg-slate-50/30">
-                        <p className="text-[10px] text-slate-500 leading-normal font-medium">
+                      <div className="px-5 pb-5 pt-2 border-t border-slate-100 flex flex-col gap-1 bg-slate-50/20">
+                        <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
                           {promo.description}
                         </p>
-                        <div className="flex items-center gap-1.5 mt-1.5">
-                          <div className={cn(
-                            "w-1.5 h-1.5 rounded-full",
-                            isValid ? "bg-emerald-500 animate-pulse" : "bg-amber-400"
-                          )} />
-                          <span className={cn(
-                            "text-[8px] font-black uppercase tracking-wider",
-                            isValid ? "text-emerald-600" : "text-amber-600"
-                          )}>
-                            {isValid ? "Promoción activada y aplicada" : promo.requirementText}
-                          </span>
+                        <div className="flex items-center gap-1.5 mt-2">
+                          {isValid ? (
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 w-fit">
+                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              <span className="text-[9px] font-bold uppercase tracking-wider">
+                                Promoción activada y aplicada
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-100/80 text-amber-700 w-fit">
+                              <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                              <span className="text-[9px] font-bold uppercase tracking-wider">
+                                {promo.requirementText}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
